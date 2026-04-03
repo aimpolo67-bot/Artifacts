@@ -4,86 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Artifact #01 | Terminal</title>
-    <style>
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #000; overflow: hidden;
-            font-family: 'Courier New', monospace;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-        }
-
-        /* The Container that holds the magic */
-        .artifact-container {
-            position: relative;
-            width: 350px; height: 350px;
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer;
-            z-index: 10;
-        }
-
-        /* LAYER 1: The Outer Ring (Spins Clockwise) */
-        .layer-outer {
-            position: absolute; width: 100%; height: 100%;
-            background-image: url('chronos_nexus.png');
-            background-size: 110%; background-position: center;
-            border-radius: 50%;
-            animation: spin-right 20s linear infinite;
-            filter: drop-shadow(0 0 20px #00ffff);
-            opacity: 0.8;
-        }
-
-        /* LAYER 2: The Inner Runes (Spins Counter-Clockwise) */
-        .layer-inner {
-            position: absolute; width: 65%; height: 65%;
-            background-image: url('chronos_nexus.png');
-            background-size: 160%; background-position: center;
-            border-radius: 50%;
-            animation: spin-left 15s linear infinite;
-            mix-blend-mode: screen; /* Blends the light together perfectly */
-        }
-
-        /* LAYER 3: The Center Triangle (Spins Fast Clockwise & Pulses) */
-        .layer-core {
-            position: absolute; width: 35%; height: 35%;
-            background-image: url('chronos_nexus.png');
-            background-size: 280%; background-position: center;
-            border-radius: 50%;
-            animation: spin-right 8s linear infinite, pulse-glow 2s ease-in-out infinite;
-            mix-blend-mode: screen;
-            box-shadow: 0 0 30px #00ffff;
-        }
-
-        /* THE ANIMATIONS */
-        @keyframes spin-right { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes spin-left { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
-        @keyframes pulse-glow {
-            0%, 100% { filter: brightness(1) drop-shadow(0 0 10px #00ffff); transform: scale(1) rotate(auto); }
-            50% { filter: brightness(1.5) drop-shadow(0 0 30px #fff); transform: scale(1.05) rotate(auto); }
-        }
-
-        /* HUD ELEMENTS */
-        .ui-text {
-            color: #00ffff; letter-spacing: 4px; text-align: center;
-            position: absolute; z-index: 20;
-        }
-        .header { top: 10%; font-size: 0.8rem; }
-        .footer { bottom: 10%; font-size: 1rem; text-shadow: 0 0 10px #00ffff; }
-
-        /* VIDEO VAULT */
-        #video-vault {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 100; display: none;
-            flex-direction: column; justify-content: center; align-items: center;
-        }
-        video { width: 95%; max-width: 700px; border: 2px solid #00ffff; box-shadow: 0 0 40px #00ffff; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="ui-text header">ARTIFACT_01 // CHRONOS_NEXUS</div>
     
-    <div class="artifact-container" onclick="unlockVideo()">
+    <div class="artifact-container" id="nexus-trigger">
         <div class="layer-outer"></div>
         <div class="layer-inner"></div>
         <div class="layer-core"></div>
@@ -92,21 +19,12 @@
     <div class="ui-text footer" id="status-text">TAP TO SYNCHRONIZE</div>
 
     <div id="video-vault">
-        <video id="main-video" controls><source src="artifact_01.mp4" type="video/mp4"></video>
-        <button onclick="location.reload()" style="margin-top:20px; color:#00ffff; background:transparent; border:1px solid #00ffff; padding: 10px; cursor:pointer;">RE-LOCK</button>
+        <video id="main-video" controls>
+            <source src="artifact_01.mp4" type="video/mp4">
+        </video>
+        <button id="relock-btn">RE-LOCK</button>
     </div>
 
-    <script>
-        function unlockVideo() {
-            document.getElementById('status-text').innerText = "DECRYPTING...";
-            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
-            
-            setTimeout(() => {
-                document.querySelector('.artifact-container').style.display = 'none';
-                document.getElementById('video-vault').style.display = 'flex';
-                document.getElementById('main-video').play();
-            }, 1000);
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>

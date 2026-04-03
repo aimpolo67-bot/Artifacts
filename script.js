@@ -1,22 +1,19 @@
-function startUnlock() {
-    const seal = document.getElementById('nexus-seal');
-    const wrapper = document.getElementById('seal-wrapper');
-    const status = document.getElementById('status-text');
-    const videoArchive = document.getElementById('video-archive');
-    const video = document.getElementById('main-video');
+document.addEventListener("DOMContentLoaded", () => {
+    const sceneEl = document.querySelector('a-scene');
+    const arVideo = document.querySelector('#nexus-video');
+    const overlay = document.querySelector('#ui-overlay');
 
-    // Step 1: System Alert
-    status.innerText = "SYNCHRONIZING...";
-    status.style.color = "#fff";
-    
-    // Step 2: Power Surge (Visual Shaking)
-    wrapper.style.animation = "shake 0.5s infinite";
-    seal.style.filter = "brightness(3) drop-shadow(0 0 50px #fff)";
+    // When the camera successfully finds your Chronos Nexus card
+    sceneEl.addEventListener("targetFound", event => {
+        console.log("Nexus Detected!");
+        overlay.classList.add('hidden'); // Hide the scanning UI
+        arVideo.play(); // Start the Fire & Ice video
+    });
 
-    // Step 3: The "Flash" and Reveal
-    setTimeout(() => {
-        wrapper.classList.add('hidden');
-        videoArchive.classList.remove('hidden');
-        video.play(); // Auto-play the Fire & Ice video
-    }, 1500);
-}
+    // If the camera loses sight of the card
+    sceneEl.addEventListener("targetLost", event => {
+        console.log("Nexus Lost");
+        overlay.classList.remove('hidden'); // Show the scanning UI again
+        arVideo.pause();
+    });
+});

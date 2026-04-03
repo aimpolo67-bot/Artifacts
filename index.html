@@ -1,17 +1,29 @@
-<div id="terminal">
-    <div class="glitch-header">ARTIFACT_01 // CHRONOS_NEXUS</div>
-    
-    <div class="seal-container" onclick="unlockVideo()">
-        <img src="chronos_nexus.png" id="nexus-seal">
-        <div class="scan-bar"></div>
-    </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artifact #01 | Terminal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="terminal-container">
+        <div class="header">
+            <span class="status-dot"></span> SYSTEM_ONLINE // ARTIFACT_01
+        </div>
 
-    <div id="status">STATUS: LOCKED_BY_ARCHITECT</div>
+        <div class="nexus-wrapper">
+            <div class="scan-line"></div>
+            <img src="chronos_nexus.png" id="main-seal" alt="Chronos Nexus">
+            <div class="outer-glow"></div>
+        </div>
 
-    <div id="video-vault" class="hidden">
-        <video id="artifact-video" controls>
-            <source src="artifact_01.mp4" type="video/mp4">
-        </video>
-        <p class="desc">CHINESE_LANGUAGE_LEVEL_1_SYNC_COMPLETE</p>
+        <div class="footer">
+            <p id="loading-text">INITIALIZING_BIOMETRIC_SYNC...</p>
+            <div class="progress-bar">
+                <div class="fill"></div>
+            </div>
+        </div>
     </div>
-</div>
+</body>
+</html>

@@ -3,76 +3,60 @@
 <head>
     <style>
         body { 
-            background-color: #000; 
-            display: flex; justify-content: center; align-items: center; 
-            height: 100vh; overflow: hidden; margin: 0;
+            background-color: #000; margin: 0; height: 100vh; overflow: hidden;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; 
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; cursor: pointer; 
         }
         
-        /* The Containment Field - Fixed size to prevent drift */
+        /* 2. PARTICLE SYSTEM - Now Tiny Sparking Stars */
+        #particles-js { position: absolute; width: 100%; height: 100%; z-index: 0; }
+
         .artifact-zone { 
-            position: relative; 
-            width: 600px; height: 600px; 
+            position: relative; width: 600px; height: 600px; z-index: 1;
+            transition: transform 3s ease-out, opacity 3s ease-out; /* Slower, gentler zoom */
         }
 
-        /* FIXED: Base class now uses 100% scale to prevent ghosting/shadowing */
         .layer {
-            position: absolute; 
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background-size: 100% 100%; /* Force exact fit to container */
-            background-position: center; 
-            background-repeat: no-repeat;
-            filter: drop-shadow(0 0 10px #00ffff); 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: 100% 100%; background-position: center; background-repeat: no-repeat;
+            filter: drop-shadow(0 0 10px #00ffff); transition: all 2s ease-in-out;
         }
 
-        /* 5. Outest - Slowest (Background) */
-        .layer-5 {
-            background-image: url('5.png');
-            animation: spin-right 45s linear infinite;
-            opacity: 1;
-            z-index: 1;
-        }
+        /* --- GENTLE ACTIVATION STATE --- */
+        .activated .layer-5 { animation: spin-right 8s linear infinite !important; opacity: 0.3; }
+        .activated .layer-4 { animation: spin-left 6s linear infinite !important; }
+        .activated .layer-3 { animation: spin-right 4s linear infinite !important; }
+        .activated .layer-2 { animation: spin-left 3s linear infinite !important; }
+        .activated .layer-1 { animation: spin-right 2s linear infinite !important; filter: brightness(2) drop-shadow(0 0 20px #fff); }
+        .activated { transform: scale(2.5); opacity: 0; } /* Less aggressive zoom */
 
-        /* 4. Outer */
-        .layer-4 {
-            background-image: url('4.png');
-            animation: spin-left 30s linear infinite;
-            z-index: 2;
-        }
+        /* --- BASE ROTATIONS --- */
+        .layer-5 { background-image: url('5.png'); animation: spin-right 45s linear infinite; z-index: 1; }
+        .layer-4 { background-image: url('4.png'); animation: spin-left 30s linear infinite; z-index: 2; }
+        .layer-3 { background-image: url('3.png'); animation: spin-right 20s linear infinite; z-index: 3; }
+        .layer-2 { background-image: url('2.png'); animation: spin-left 12s linear infinite; z-index: 4; }
+        .layer-1 { background-image: url('1.png'); animation: spin-right 15s linear infinite; z-index: 5; }
 
-        /* 3. Middle */
-        .layer-3 {
-            background-image: url('3.png');
-            animation: spin-right 20s linear infinite;
-            z-index: 3;
-        }
-
-        /* 2. Inner */
-        .layer-2 {
-            background-image: url('2.png');
-            animation: spin-left 12s linear infinite;
-            z-index: 4;
-        }
-
-        /* 1. Core - Fastest (Top Layer) */
-        .layer-1 {
-            background-image: url('1.png');
-            animation: spin-right 10s linear infinite;
-            z-index: 5;
-        }
-
-        /* Animation Math */
         @keyframes spin-right { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes spin-left { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
         
-        @keyframes core-pulse { 
-            50% { filter: drop-shadow(0 0 30px #fff) brightness(1.5); transform: scale(1.05); } 
-        }
+        /* 3. CHINESE GREETING & PROMPT */
+        .ui-container { position: absolute; bottom: 10%; text-align: center; z-index: 10; }
+        .touch-prompt { color: #00ffff; letter-spacing: 8px; font-weight: bold; text-shadow: 0 0 10px #00ffff; animation: pulse 2s infinite; }
+        .chinese-greet { color: #fff; font-size: 1.2rem; margin-top: 15px; opacity: 0; transition: opacity 2s; letter-spacing: 4px; }
+        .show-greet { opacity: 1; }
+
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
     </style>
 </head>
-<body>
+<body onclick="beginSequence()">
 
-    <div class="artifact-zone">
+    <audio id="magicHum" loop src="hum.mp3"></audio>
+    <audio id="chime" src="chime.mp3"></audio>
+
+    <div id="particles-js"></div>
+
+    <div class="artifact-zone" id="portal">
         <div class="layer layer-5"></div>
         <div class="layer layer-4"></div>
         <div class="layer layer-3"></div>
@@ -80,5 +64,59 @@
         <div class="layer layer-1"></div>
     </div>
 
+    <div class="ui-container">
+        <div class="touch-prompt" id="prompt">TOUCH ANYWHERE TO BEGIN</div>
+        <div class="chinese-greet" id="greet">欢迎来到我们的世界</div> 
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        /* UPDATED: Tiny Sparking Stars Configuration */
+        particlesJS("particles-js", {
+            "particles": {
+                "number": { "value": 150, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#ffffff" },
+                "shape": { "type": "circle" },
+                "opacity": { 
+                    "value": 1, 
+                    "random": true, 
+                    "anim": { "enable": true, "speed": 1.5, "opacity_min": 0.1, "sync": false } 
+                },
+                "size": { 
+                    "value": 1.5, 
+                    "random": true, 
+                    "anim": { "enable": true, "speed": 2, "size_min": 0.1, "sync": false } 
+                },
+                "line_linked": { "enable": false },
+                "move": { 
+                    "enable": true, 
+                    "speed": 0.3, 
+                    "direction": "none", 
+                    "random": true, 
+                    "straight": false, 
+                    "out_mode": "out" 
+                }
+            }
+        });
+
+        let launched = false;
+        function beginSequence() {
+            if (launched) return;
+            launched = true;
+
+            // Start Audio
+            document.getElementById('magicHum').play();
+            document.getElementById('chime').play();
+
+            // Show Chinese Greeting
+            document.getElementById('prompt').style.display = 'none';
+            document.getElementById('greet').classList.add('show-greet');
+            
+            // Trigger Gentle Activation
+            document.getElementById('portal').classList.add('activated');
+
+            setTimeout(() => { window.location.href = "welcome.html"; }, 4000); 
+        }
+    </script>
 </body>
 </html>

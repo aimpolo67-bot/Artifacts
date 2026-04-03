@@ -1,54 +1,25 @@
-body {
-    margin: 0; background: #000; color: #00ffff;
-    font-family: 'Courier New', monospace;
-    display: flex; justify-content: center; align-items: center; height: 100vh;
+body { margin: 0; overflow: hidden; background-color: #000; }
+
+#ui-overlay {
+    position: fixed; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100; text-align: center;
+    color: #00ffff; font-family: 'Courier New', monospace;
+    pointer-events: none;
 }
 
-#seal-wrapper { text-align: center; cursor: pointer; position: relative; }
-
-#nexus-seal {
-    width: 300px; filter: drop-shadow(0 0 20px #00ffff);
-    animation: rotate 20s linear infinite;
+.scanner-line {
+    width: 250px; height: 2px;
+    background: #00ffff;
+    box-shadow: 0 0 15px #00ffff;
+    margin-bottom: 20px;
+    animation: scanMove 2s ease-in-out infinite;
 }
 
-@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-.scan-line {
-    position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-    background: #00ffff; box-shadow: 0 0 15px #00ffff;
-    animation: scan 3s linear infinite;
+@keyframes scanMove {
+    0%, 100% { transform: translateY(-50px); opacity: 0.2; }
+    50% { transform: translateY(50px); opacity: 1; }
 }
 
-@keyframes scan { 0% { top: 0; } 100% { top: 300px; } }
-
-.hidden { display: none; }
-#video-archive { width: 90%; max-width: 600px; text-align: center; }
-video { width: 100%; border: 2px solid #00ffff; box-shadow: 0 0 20px #00ffff; }
-/* SURGE EFFECT */
-@keyframes shake {
-    0% { transform: translate(1px, 1px) rotate(0deg); }
-    20% { transform: translate(-3px, 0px) rotate(1deg); }
-    40% { transform: translate(3px, 2px) rotate(-1deg); }
-    60% { transform: translate(-1px, -1px) rotate(0deg); }
-    100% { transform: translate(1px, -2px) rotate(-1deg); }
-}
-
-#status-text {
-    margin-top: 20px;
-    font-size: 1.2rem;
-    letter-spacing: 5px;
-    text-shadow: 0 0 10px #00ffff;
-}
-
-.btn {
-    margin-top: 20px;
-    background: transparent;
-    border: 1px solid #00ffff;
-    color: #00ffff;
-    padding: 10px 20px;
-    font-family: 'Courier New', monospace;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.btn:hover { background: #00ffff; color: #000; }
+/* Hide UI when target is found */
+.hidden { display: none !important; }

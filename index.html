@@ -3,127 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Artifact #01 | Chronos Nexus</title>
+    <title>Artifact #01 | Star Core</title>
     <style>
-        /* --- STYLES --- */
+        /* --- ENVIRONMENT --- */
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #050505; 
+            background-color: #02050a; /* Deep space blue/black */
             font-family: 'Courier New', Courier, monospace;
             color: #00ffff; overflow: hidden;
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
         }
 
-        /* Subtle background glow */
         .bg-glow {
             position: absolute; top: 50%; left: 50%;
             width: 100vw; height: 100vh;
             transform: translate(-50%, -50%);
-            background: radial-gradient(circle, rgba(0,255,255,0.1) 0%, rgba(0,0,0,1) 60%);
+            background: radial-gradient(circle, rgba(0,255,255,0.05) 0%, rgba(2,5,10,1) 70%);
             z-index: 1; pointer-events: none;
         }
 
-        /* Text UI */
-        .ui-text {
-            position: absolute; z-index: 20;
-            letter-spacing: 4px; text-align: center;
-            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
-        }
-        .header { top: 8%; font-size: 0.9rem; }
-        .footer { bottom: 10%; font-size: 1rem; cursor: pointer; }
-
-        /* THE MAGIC CIRCLE (Clean & Stable) */
-        .artifact-seal {
+        /* --- THE PURE CSS MAGIC CIRCLE --- */
+        .nexus-container {
             position: relative; z-index: 10;
-            width: 320px; height: 320px;
-            /* This zooms into the center of your rectangle to cut out the circle */
-            background-image: url('chronos_nexus.png');
-            background-size: cover; 
-            background-position: center;
-            
-            border-radius: 50%;
-            border: 2px solid rgba(0, 255, 255, 0.4);
-            box-shadow: 0 0 40px rgba(0, 255, 255, 0.6), inset 0 0 20px rgba(0, 255, 255, 0.4);
-            
+            width: 300px; height: 300px;
+            display: flex; justify-content: center; align-items: center;
             cursor: pointer;
-            animation: spin 25s linear infinite, breathe 3s ease-in-out infinite;
-            transition: transform 0.2s;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .artifact-seal:active { transform: scale(0.95); }
+        .nexus-container:active { transform: scale(0.9); }
 
-        /* Animations */
-        @keyframes spin { 
-            100% { transform: rotate(360deg); } 
+        /* Outer Ring (Broken Tech Ring) */
+        .ring-outer {
+            position: absolute; width: 100%; height: 100%;
+            border: 4px solid rgba(0, 255, 255, 0.8);
+            border-top-color: transparent;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), inset 0 0 20px rgba(0, 255, 255, 0.5);
+            animation: spin-right 12s linear infinite;
         }
+
+        /* Inner Ring (Dashed Runes Ring) */
+        .ring-inner {
+            position: absolute; width: 75%; height: 75%;
+            border: 3px dashed rgba(0, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: spin-left 20s linear infinite;
+        }
+
+        /* Center Ring (Containment Field) */
+        .ring-center {
+            position: absolute; width: 55%; height: 55%;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.8);
+            animation: breathe 3s ease-in-out infinite;
+        }
+
+        /* THE STAR CORE (8-Pointed Magic Star) */
+        .star-core {
+            position: absolute; width: 35%; height: 35%;
+            background-color: #00ffff;
+            /* Mathematics to draw a perfect 8-pointed star */
+            clip-path: polygon(50% 0%, 55% 40%, 100% 50%, 55% 60%, 50% 100%, 45% 60%, 0% 50%, 45% 40%);
+            box-shadow: 0 0 40px #00ffff;
+            animation: spin-right 15s linear infinite, star-pulse 2s ease-in-out infinite;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes spin-right { 100% { transform: rotate(360deg); } }
+        @keyframes spin-left { 100% { transform: rotate(-360deg); } }
         @keyframes breathe { 
-            0%, 100% { box-shadow: 0 0 40px rgba(0, 255, 255, 0.6), inset 0 0 20px rgba(0, 255, 255, 0.4); }
-            50% { box-shadow: 0 0 70px rgba(0, 255, 255, 1), inset 0 0 40px rgba(0, 255, 255, 0.8); }
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); }
+        }
+        @keyframes star-pulse {
+            0%, 100% { filter: drop-shadow(0 0 15px #00ffff) brightness(1); transform: scale(1) rotate(0deg); }
+            50% { filter: drop-shadow(0 0 35px #fff) brightness(1.5); transform: scale(1.1) rotate(180deg); }
         }
 
-        /* THE VIDEO VAULT */
+        /* --- UI & VIDEO VAULT --- */
+        .ui-text { position: absolute; z-index: 20; letter-spacing: 4px; text-align: center; }
+        .header { top: 8%; font-size: 0.9rem; opacity: 0.8; }
+        .footer { bottom: 10%; font-size: 1rem; text-shadow: 0 0 15px #00ffff; }
+
         #video-vault {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000; z-index: 100; display: none;
             flex-direction: column; justify-content: center; align-items: center;
         }
-
-        video { 
-            width: 90%; max-width: 600px; 
-            border: 1px solid #00ffff; 
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4); 
-            outline: none;
-        }
-
-        .reset-btn {
-            margin-top: 25px; color: #00ffff; background: transparent; 
-            border: 1px solid #00ffff; padding: 10px 20px; 
-            font-family: inherit; font-size: 0.9rem;
-            cursor: pointer; letter-spacing: 2px;
-        }
-        .reset-btn:hover { background: rgba(0, 255, 255, 0.2); }
+        video { width: 90%; max-width: 600px; border: 1px solid #00ffff; box-shadow: 0 0 30px rgba(0, 255, 255, 0.4); }
+        .reset-btn { margin-top: 25px; color: #00ffff; background: transparent; border: 1px solid #00ffff; padding: 10px 20px; font-family: inherit; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div class="bg-glow"></div>
-
-    <div class="ui-text header">ARTIFACT_01 // CHRONOS_NEXUS</div>
+    <div class="ui-text header">PROTOCOL_02 // CLEAN_DEPLOYMENT</div>
     
-    <div class="artifact-seal" id="trigger-btn"></div>
+    <div class="nexus-container" id="trigger-btn">
+        <div class="ring-outer"></div>
+        <div class="ring-inner"></div>
+        <div class="ring-center"></div>
+        <div class="star-core"></div>
+    </div>
 
-    <div class="ui-text footer" id="status-msg">TAP TO SYNCHRONIZE</div>
+    <div class="ui-text footer" id="status-msg">TAP TO UNLOCK</div>
 
     <div id="video-vault">
-        <video id="main-video" controls>
-            <source src="artifact_01.mp4" type="video/mp4">
-        </video>
+        <video id="main-video" controls><source src="artifact_01.mp4" type="video/mp4"></video>
         <button class="reset-btn" onclick="location.reload()">[ REBOOT SYSTEM ]</button>
     </div>
 
     <script>
-        /* --- LOGIC --- */
-        const seal = document.getElementById('trigger-btn');
+        const trigger = document.getElementById('trigger-btn');
         const statusMsg = document.getElementById('status-msg');
-        const vault = document.getElementById('video-vault');
-        const video = document.getElementById('main-video');
-
-        seal.addEventListener('click', () => {
-            statusMsg.innerText = "DECRYPTING SIGNAL...";
+        
+        trigger.addEventListener('click', () => {
+            statusMsg.innerText = "ACCESS GRANTED...";
             statusMsg.style.color = "#fff";
-            
-            // Haptic vibration 
             if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
 
-            // Delay for dramatic effect
             setTimeout(() => {
-                seal.style.display = 'none';
-                document.querySelector('.header').style.display = 'none';
+                trigger.style.display = 'none';
                 statusMsg.style.display = 'none';
+                document.querySelector('.header').style.display = 'none';
                 
-                vault.style.display = 'flex';
-                video.play();
+                document.getElementById('video-vault').style.display = 'flex';
+                document.getElementById('main-video').play();
             }, 800);
         });
     </script>

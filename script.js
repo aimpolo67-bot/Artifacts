@@ -1,49 +1,34 @@
-const sceneEl = document.querySelector('a-scene');
-const overlay = document.querySelector('#ui-overlay');
+document.addEventListener("DOMContentLoaded", () => {
+    const targetEl = document.querySelector('#target-anchor');
+    const construct = document.querySelector('#construct-wrapper');
+    const summonFlash = document.querySelector('#summon-flash');
+    const nexusVideo = document.querySelector('#nexus-video');
+    const statusDisplay = document.querySelector('#status-display');
 
-// 1. When the camera finds the card
-sceneEl.addEventListener("targetFound", event => {
-    // Show a "Ready to Summon" message
-    overlay.innerHTML = "<h1>NEXUS DETECTED</h1><p>TAP TO SUMMON ARTIFACT</p>";
-    overlay.style.color = "#fff";
-    overlay.style.textShadow = "0 0 20px #00ffff";
-    
-    // Add a click listener to the whole screen
-    window.onclick = () => {
-        summonArtifact();
-    };
-});
+    // 1. Initial State: 3D Construct is "shrunk" and low
+    construct.setAttribute('scale', '0.01 0.01 0.01');
+    construct.setAttribute('position', '0 0.05 0');
 
-function summonArtifact() {
-    // Play a "Power Up" sound or vibration
-    navigator.vibrate([100, 50, 100]);
-
-    // Transition: Fade out the camera, Fade in the Menu
-    document.body.style.transition = "background 1s";
-    document.body.style.backgroundColor = "#000";
-
-    setTimeout(() => {
-        sceneEl.style.display = 'none'; // Turn off camera
-        overlay.classList.add('hidden'); // Hide scanning UI
+    // 2. THE SUMMONING (On Target Found)
+    targetEl.addEventListener("targetFound", event => {
+        console.log("Nexus Activated!");
         
-        // NOW: Show your 3-button Game Menu
-        showGameMenu(); 
-    }, 500);
-}
+        // Phase 1: Power-up (High-performance animation)
+        summonFlash.setAttribute('animation', 'property: opacity; to: 0; dur: 800; easing: easeOutQuad');
+        summonFlash.setAttribute('animation__scale', 'property: scale; to: 1.5 1.5 1.5; dur: 800; easing: easeOutQuad');
 
-function showGameMenu() {
-    // This creates the buttons and video player on the screen
-    document.body.innerHTML = `
-        <div id="artifact-interface">
-            <img src="chronos_nexus.png" class="spinning-bg">
-            <div class="video-container">
-                <video id="main-video" controls src="artifact_01.mp4"></video>
-            </div>
-            <div class="button-row">
-                <button onclick="playVideo('ice')">🧊 ICE</button>
-                <button onclick="playVideo('fire')">🔥 FIRE</button>
-                <button onclick="playVideo('sync')">⚡ SYNC</button>
-            </div>
-        </div>
-    `;
-}
+        // Phase 2: Rise & Pop-Up (The "Action")
+        construct.setAttribute('animation__rise', 'property: position; to: 0 0.1 0; dur: 1200; easing: easeOutElastic; delay: 200');
+        construct.setAttribute('animation__scale', 'property: scale; to: 1 1 1; dur: 1200; easing: easeOutElastic; delay: 200');
+
+        // Phase 3: Update UI
+        statusDisplay.innerHTML = `
+            <p style="color:#00ffff; text-shadow:0 0 10px #00ffff">SYSTEM SYNCED</p>
+            <div class="sync-line" style="background:#00ffff; box-shadow:0 0 15px #00ffff"></div>
+            <p style="color:#fff">ARTIFACT #01 DEPLOYED</p>
+        `;
+        
+        // Final Action: Start the Video
+        setTimeout(() => { nexusVideo.play(); }, 1400); 
+    });
+});

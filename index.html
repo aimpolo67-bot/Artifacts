@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artifact #01 | Terminal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app-container">
+        <div id="seal-wrapper" onclick="startUnlock()">
+            <img src="chronos_nexus.png" id="nexus-seal" alt="Nexus Seal">
+            <div class="scan-line"></div>
+            <h2 id="status-text">SYSTEM LOCKED</h2>
+        </div>
+
+        <div id="video-archive" class="hidden">
+            <video id="main-video" controls>
+                <source src="artifact_01.mp4" type="video/mp4">
+            </video>
+            <button class="btn" onclick="location.reload()">RE-LOCK SYSTEM</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

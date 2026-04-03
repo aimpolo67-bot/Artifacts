@@ -3,28 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Artifact #01 | Terminal</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Artifact #01 | Chronos Nexus</title>
+    <style>
+        /* --- STYLES --- */
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #050505; 
+            font-family: 'Courier New', Courier, monospace;
+            color: #00ffff; overflow: hidden;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+        }
+
+        /* Subtle background glow */
+        .bg-glow {
+            position: absolute; top: 50%; left: 50%;
+            width: 100vw; height: 100vh;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(0,255,255,0.1) 0%, rgba(0,0,0,1) 60%);
+            z-index: 1; pointer-events: none;
+        }
+
+        /* Text UI */
+        .ui-text {
+            position: absolute; z-index: 20;
+            letter-spacing: 4px; text-align: center;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+        .header { top: 8%; font-size: 0.9rem; }
+        .footer { bottom: 10%; font-size: 1rem; cursor: pointer; }
+
+        /* THE MAGIC CIRCLE (Clean & Stable) */
+        .artifact-seal {
+            position: relative; z-index: 10;
+            width: 320px; height: 320px;
+            /* This zooms into the center of your rectangle to cut out the circle */
+            background-image: url('chronos_nexus.png');
+            background-size: cover; 
+            background-position: center;
+            
+            border-radius: 50%;
+            border: 2px solid rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.6), inset 0 0 20px rgba(0, 255, 255, 0.4);
+            
+            cursor: pointer;
+            animation: spin 25s linear infinite, breathe 3s ease-in-out infinite;
+            transition: transform 0.2s;
+        }
+
+        .artifact-seal:active { transform: scale(0.95); }
+
+        /* Animations */
+        @keyframes spin { 
+            100% { transform: rotate(360deg); } 
+        }
+        @keyframes breathe { 
+            0%, 100% { box-shadow: 0 0 40px rgba(0, 255, 255, 0.6), inset 0 0 20px rgba(0, 255, 255, 0.4); }
+            50% { box-shadow: 0 0 70px rgba(0, 255, 255, 1), inset 0 0 40px rgba(0, 255, 255, 0.8); }
+        }
+
+        /* THE VIDEO VAULT */
+        #video-vault {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 100; display: none;
+            flex-direction: column; justify-content: center; align-items: center;
+        }
+
+        video { 
+            width: 90%; max-width: 600px; 
+            border: 1px solid #00ffff; 
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.4); 
+            outline: none;
+        }
+
+        .reset-btn {
+            margin-top: 25px; color: #00ffff; background: transparent; 
+            border: 1px solid #00ffff; padding: 10px 20px; 
+            font-family: inherit; font-size: 0.9rem;
+            cursor: pointer; letter-spacing: 2px;
+        }
+        .reset-btn:hover { background: rgba(0, 255, 255, 0.2); }
+    </style>
 </head>
 <body>
 
+    <div class="bg-glow"></div>
+
     <div class="ui-text header">ARTIFACT_01 // CHRONOS_NEXUS</div>
     
-    <div class="artifact-container" id="nexus-trigger">
-        <div class="layer-outer"></div>
-        <div class="layer-inner"></div>
-        <div class="layer-core"></div>
-    </div>
+    <div class="artifact-seal" id="trigger-btn"></div>
 
-    <div class="ui-text footer" id="status-text">TAP TO SYNCHRONIZE</div>
+    <div class="ui-text footer" id="status-msg">TAP TO SYNCHRONIZE</div>
 
     <div id="video-vault">
         <video id="main-video" controls>
             <source src="artifact_01.mp4" type="video/mp4">
         </video>
-        <button id="relock-btn">RE-LOCK</button>
+        <button class="reset-btn" onclick="location.reload()">[ REBOOT SYSTEM ]</button>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        /* --- LOGIC --- */
+        const seal = document.getElementById('trigger-btn');
+        const statusMsg = document.getElementById('status-msg');
+        const vault = document.getElementById('video-vault');
+        const video = document.getElementById('main-video');
+
+        seal.addEventListener('click', () => {
+            statusMsg.innerText = "DECRYPTING SIGNAL...";
+            statusMsg.style.color = "#fff";
+            
+            // Haptic vibration 
+            if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+
+            // Delay for dramatic effect
+            setTimeout(() => {
+                seal.style.display = 'none';
+                document.querySelector('.header').style.display = 'none';
+                statusMsg.style.display = 'none';
+                
+                vault.style.display = 'flex';
+                video.play();
+            }, 800);
+        });
+    </script>
 </body>
 </html>

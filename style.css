@@ -1,45 +1,39 @@
 body {
-    margin: 0; background-color: #000;
-    display: flex; justify-content: center; align-items: center;
+    margin: 0; background: #000;
     height: 100vh; overflow: hidden;
-    font-family: 'Courier New', monospace; color: #00ffff;
+    display: flex; justify-content: center; align-items: center;
 }
 
-#terminal-container { text-align: center; width: 100%; }
-
-.nexus-wrapper {
-    position: relative; display: inline-block;
-    margin: 40px auto;
+/* THE BACKGROUND (STAYS STILL) */
+.space-bg {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url('chronos_nexus.png');
+    background-size: cover; background-position: center;
+    filter: brightness(0.4); /* Make background darker so circle pops */
+    z-index: 1;
 }
 
-#main-seal {
-    width: 300px; height: auto;
-    filter: drop-shadow(0 0 15px #00ffff);
-    /* THE SPINNING ACTION */
-    animation: nexus-rotate 20s linear infinite;
+/* THE MAGIC CIRCLE (SPINS) */
+.magic-circle {
+    position: relative; z-index: 10;
+    width: 350px; height: 350px;
+    background-image: url('chronos_nexus.png');
+    background-size: cover; background-position: center;
+    
+    /* THIS CUTS THE IMAGE INTO A PERFECT CIRCLE */
+    clip-path: circle(40% at 50% 50%); 
+    
+    filter: drop-shadow(0 0 20px #00ffff) brightness(1.2);
+    animation: nexus-spin 15s linear infinite;
 }
 
-@keyframes nexus-rotate {
+@keyframes nexus-spin {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
 
-.scan-line {
-    position: absolute; top: 0; left: 0;
-    width: 100%; height: 2px;
-    background: #00ffff; box-shadow: 0 0 20px #00ffff;
-    z-index: 10;
-    animation: scan-move 3s ease-in-out infinite;
-}
-
-@keyframes scan-move {
-    0%, 100% { top: 0%; opacity: 0.2; }
-    50% { top: 100%; opacity: 1; }
-}
-
-.header { font-size: 0.8rem; letter-spacing: 3px; margin-bottom: 20px; }
-.status-dot {
-    display: inline-block; width: 8px; height: 8px;
-    background: #00ffff; border-radius: 50%;
-    margin-right: 10px; box-shadow: 0 0 10px #00ffff;
+.ui-text {
+    position: absolute; bottom: 10%; z-index: 20;
+    color: #00ffff; font-family: 'Courier New', monospace;
+    letter-spacing: 3px; text-shadow: 0 0 10px #00ffff;
 }

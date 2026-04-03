@@ -2,35 +2,48 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artifact #01 | Chronos Nexus</title>
+    <title>Artifact #01 Terminal</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.2/dist/mindar-image-aframe.prod.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="ui-overlay">
-        <div class="scanner-line"></div>
-        <p>SCANNING FOR CHRONOS NEXUS...</p>
+    <div id="status-display">
+        <p>SYSTEM LOCKED</p>
+        <div class="sync-line"></div>
+        <p>WAITING FOR NEXUS SIGNAL...</p>
     </div>
 
-    <a-scene mindar-image="imageTargetSrc: ./targets.mind;" 
-             color-space="sRGB" 
-             renderer="colorManagement: true, physicallyCorrectLights" 
-             vr-mode-ui="enabled: false" 
-             device-orientation-permission-ui="enabled: false">
+    <a-scene mindar-image="imageTargetSrc: ./targets.mind;" color-space="sRGB" renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
         
         <a-assets>
             <video id="nexus-video" src="artifact_01.mp4" loop="false" crossorigin="anonymous"></video>
         </a-assets>
 
-        <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+        <a-camera position="0 0 0" look-controls="enabled: false" cursor="fuse: false; rayOrigin: mouse;"></a-camera>
 
-        <a-entity mindar-image-target="targetIndex: 0">
-            <a-video src="#nexus-video" width="1" height="0.6" position="0 0 0.1"></a-video>
+        <a-entity id="target-anchor" mindar-image-target="targetIndex: 0">
             
-            <a-ring color="#00ffff" radius-inner="0.7" radius-outer="0.8" 
-                    animation="property: rotation; to: 0 0 360; loop: true; dur: 4000"></a-ring>
+            <a-entity id="construct-wrapper" position="0 0.1 0" rotation="-90 0 0" class="clickable">
+                
+                <a-ring id="summon-flash" color="#fff" radius-inner="0.6" radius-outer="0.7" opacity="1" position="0 0 0.1"></a-ring>
+                
+                <a-ring color="#00ffff" radius-inner="0.75" radius-outer="0.8" 
+                        animation="property: rotation; to: 0 0 360; loop: true; dur: 8000; easing: linear"></a-ring>
+                
+                <a-entity id="triangles" position="0 0 0.1">
+                    <a-triangle color="#00ffff" scale="0.5 0.5 0.5" position="-0.15 0.1 0"></a-triangle>
+                    <a-triangle color="#00ffff" scale="0.5 0.5 0.5" position="0.15 0.1 0"></a-triangle>
+                    <a-triangle color="#00ffff" scale="0.5 0.5 0.5" position="0 -0.2 0" rotation="0 0 180"></a-triangle>
+                </a-entity>
+                
+                <a-box id="ice-gem" color="#00ffff" depth="0.1" width="0.1" height="0.1" position="-0.6 0 0.2"></a-box>
+                <a-box id="fire-gem" color="orange" depth="0.1" width="0.1" height="0.1" position="0.6 0 0.2"></a-box>
+
+                <a-video id="construct-video" src="#nexus-video" width="1.2" height="0.8" position="0 0 0.4"></a-video>
+
+            </a-entity>
         </a-entity>
     </a-scene>
 

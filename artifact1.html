@@ -26,7 +26,7 @@
         }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
 
-        /* THE CLASSROOM (With the fixes: contain & .png) */
+        /* THE CLASSROOM (contain & .png) */
         #classroom-preview {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: url('classroom.png') no-repeat center center; 
@@ -35,26 +35,56 @@
             display: none; opacity: 0; transition: opacity 3s ease; z-index: -4; 
         }
 
-        /* 2. THE REALITY CRACK ANIMATION (NEW) */
-        #anomaly-layer {
+        /* 2. THE TEXTURED REALITY FRACURE (NEW) */
+        #fracture-container {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 200px; height: 200px; 
+            display: none; opacity: 0; transition: opacity 2s ease; z-index: 50;
+        }
+
+        /* Complex texture crack */
+        .fracture-texture {
+            width: 100%; height: 100%;
+            background: rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.8), 0 0 30px #fff;
+            clip-path: polygon(10% 25%, 35% 25%, 35% 10%, 65% 10%, 65% 25%, 90% 25%, 90% 50%, 65% 50%, 65% 35%, 35% 35%, 35% 50%, 10% 50%, 10% 75%, 35% 75%, 35% 90%, 65% 90%, 65% 75%, 90% 75%, 90% 100%, 0% 100%, 0% 0%, 10% 0%);
+            animation: glitch-pulse 0.2s infinite;
+        }
+        @keyframes glitch-pulse {
+            0% { transform: scale(1); opacity: 0.8; filter: hue-rotate(0deg); }
+            50% { transform: scale(1.05); opacity: 1; filter: hue-rotate(15deg); }
+            100% { transform: scale(1); opacity: 0.8; filter: hue-rotate(0deg); }
+        }
+
+        /* Branches of the crack */
+        .fracture-texture::before, .fracture-texture::after {
+            content: ''; position: absolute; background: #fff; box-shadow: 0 0 10px #00ffff;
+        }
+        .fracture-texture::before { width: 2px; height: 100px; left: 30px; top: 20px; transform: rotate(-15deg); }
+        .fracture-texture::after { width: 100px; height: 2px; left: 70px; top: 130px; transform: rotate(15deg); }
+
+        /* 3. THE HIDDEN [?] BUTTON (NEAR THE WALL) (NEW) */
+        #observer-button-layer {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            display: none; align-items: center; justify-content: center; flex-direction: column;
-            background: radial-gradient(circle at center, rgba(0,255,255,0.1) 0%, transparent 60%);
-            opacity: 0; transition: opacity 2s ease; z-index: 50;
+            display: none; align-items: flex-end; justify-content: flex-end;
+            padding: 50px; /* Moves it into the room corner */
+            opacity: 0; transition: opacity 2s ease; z-index: 60;
+            pointer-events: none; /* Allows click to pass to the button */
+        }
+        
+        .btn-check-anomaly {
+            background: none; border: 1px solid rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.6); padding: 15px 20px; font-size: 0.75rem;
+            letter-spacing: 5px; cursor: pointer; transition: 0.5s;
+            font-family: 'Inter', sans-serif; text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(0,255,255,0.1); backdrop-filter: blur(5px);
+            pointer-events: auto; /* Makes button clickable */
+        }
+        .btn-check-anomaly:hover { 
+            color: #00ffff; border-color: #00ffff; box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); 
         }
 
-        .fracture-line {
-            width: 2px; height: 150px; background: #fff;
-            box-shadow: 0 0 15px #00ffff, 0 0 30px #fff;
-            animation: pulse-crack 0.1s infinite alternate;
-            margin-bottom: 30px; border-radius: 50%;
-        }
-        @keyframes pulse-crack {
-            0% { transform: scaleY(1) skewX(2deg); opacity: 0.8; }
-            100% { transform: scaleY(1.1) skewX(-2deg); opacity: 1; }
-        }
-
-        /* 3. SCREEN EFFECTS & VIDEO */
+        /* 4. SCREEN EFFECTS & VIDEO */
         #reality-crack {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0, 255, 255, 0.1); backdrop-filter: blur(25px);
@@ -73,7 +103,7 @@
             transition: opacity 0.6s ease-in-out;
         }
 
-        /* 4. UI STYLES */
+        /* 5. UI STYLES */
         .content-box { position: absolute; text-align: center; transition: opacity 1s ease; z-index: 10; width: 100%; }
         .title { color: #00ffff; letter-spacing: 12px; font-size: 0.7rem; font-weight: 200; margin-bottom: 25px; text-transform: uppercase; opacity: 0.6;}
         .message { line-height: 2.5; font-size: 1.1rem; font-weight: 200; letter-spacing: 1.5px; margin-bottom: 40px; color: rgba(255, 255, 255, 0.9); }
@@ -86,7 +116,6 @@
             font-family: 'Inter', sans-serif; font-weight: 200;
         }
         .glitch-btn { border-color: #ff3333; color: #ff3333; font-family: monospace; margin-top: 20px; }
-        .final-btn { border-color: #fff; color: #fff; box-shadow: 0 0 20px rgba(0, 255, 255, 0.4); background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
 
         .system-shake { animation: hard-shake 0.3s ease-in-out; filter: invert(1); }
         @keyframes hard-shake { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-5px, 5px); } 50% { transform: translate(5px, -5px); } }
@@ -101,9 +130,12 @@
     
     <div id="classroom-preview"></div>
 
-    <div id="anomaly-layer">
-        <div class="fracture-line"></div>
-        <button class="btn final-btn" onclick="crackReality()">[ CHECK_ANOMALY ]</button>
+    <div id="fracture-container">
+        <div class="fracture-texture"></div>
+    </div>
+
+    <div id="observer-button-layer">
+        <button class="btn-check-anomaly" onclick="crackReality()">[ ? ]</button>
     </div>
 
     <div class="video-container" id="vid-wrap">
@@ -194,54 +226,64 @@
                     techno.style.opacity = '0';
                     setTimeout(() => {
                         techno.style.display = 'none';
-                        showClassroomAndAnomaly(); // TRIGGER NEW PHASE
+                        showClassroomAndAnomaly();
                     }, 1000);
                 }, 3000);
             }, 800);
         }
 
-        // STEP-BY-STEP: Show Classroom -> Wait -> Show Crack
+        // STEP-BY-STEP: Classroom -> Wait -> Show Textured Crack -> Wait -> Show Hidden Button
         function showClassroomAndAnomaly() {
             const preview = document.getElementById('classroom-preview');
             const stars = document.getElementById('stars');
-            const anomalyLayer = document.getElementById('anomaly-layer');
+            const fracture = document.getElementById('fracture-container');
+            const buttonLayer = document.getElementById('observer-button-layer');
             
-            stars.style.opacity = '0'; // Fade out stars
+            stars.style.opacity = '0'; 
             preview.style.display = 'block';
             
             setTimeout(() => {
-                preview.style.opacity = '1'; // Fade in empty classroom
+                preview.style.opacity = '1'; 
                 
-                // Wait 4 seconds in the quiet classroom, then the system cracks
+                // Wait 4 seconds for the classroom silence, then the textured crack pulses in
                 setTimeout(() => {
-                    anomalyLayer.style.display = 'flex';
+                    fracture.style.display = 'block';
                     setTimeout(() => {
-                        anomalyLayer.style.opacity = '1';
+                        fracture.style.opacity = '1';
+                        
+                        // Wait 3 more seconds after the crack appears, then the hidden button appears in the corner
+                        setTimeout(() => {
+                            buttonLayer.style.display = 'flex';
+                            setTimeout(() => {
+                                buttonLayer.style.opacity = '1';
+                            }, 50);
+                        }, 3000);
                     }, 50);
                 }, 4000);
             }, 500);
         }
 
-        // FINAL REVEAL: Triggered by the [ CHECK_ANOMALY ] button
+        // FINAL REVEAL: Triggered by the [ ? ] button
         function crackReality() {
             const crack = document.getElementById('reality-crack');
             const flash = document.getElementById('flash');
             const video = document.getElementById('bgVideo');
             const videoWrap = document.getElementById('vid-wrap');
             const preview = document.getElementById('classroom-preview');
-            const anomalyLayer = document.getElementById('anomaly-layer');
+            const fracture = document.getElementById('fracture-container');
+            const buttonLayer = document.getElementById('observer-button-layer');
 
-            // Instantly hide the crack and button
-            anomalyLayer.style.display = 'none'; 
+            // Instantly hide the old layers
+            fracture.style.display = 'none'; 
+            buttonLayer.style.display = 'none';
             
             crack.style.display = 'block';
             setTimeout(() => { crack.style.opacity = '1'; }, 50);
             document.body.classList.add('system-shake');
 
             setTimeout(() => {
-                flash.style.opacity = '1'; // The big white flash
+                flash.style.opacity = '1'; // White Flash
                 setTimeout(() => {
-                    // Clean up old layers
                     preview.style.display = 'none';
                     crack.style.display = 'none';
                     document.body.classList.remove('system-shake');
@@ -250,7 +292,6 @@
                     videoWrap.style.opacity = '1';
                     video.play();
                     
-                    // Fade out flash
                     flash.style.opacity = '0';
                 }, 600);
             }, 1000);

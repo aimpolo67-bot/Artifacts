@@ -26,17 +26,35 @@
         }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
 
-        /* THE CLASSROOM (First Destination) */
-#classroom-preview {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: url('classroom.png') no-repeat center center; 
-    background-size: contain; /* <-- CHANGED TO contain */
-    background-color: #000; /* Keeps the edges dark and clean */
-    filter: brightness(0.5);
-    display: none; opacity: 0; transition: opacity 3s ease; z-index: -3; 
-}
+        /* THE CLASSROOM (With the fixes: contain & .png) */
+        #classroom-preview {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: url('classroom.png') no-repeat center center; 
+            background-size: contain; background-color: #000;
+            filter: brightness(0.5);
+            display: none; opacity: 0; transition: opacity 3s ease; z-index: -4; 
+        }
 
-        /* THE REALITY CRACK */
+        /* 2. THE REALITY CRACK ANIMATION (NEW) */
+        #anomaly-layer {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            display: none; align-items: center; justify-content: center; flex-direction: column;
+            background: radial-gradient(circle at center, rgba(0,255,255,0.1) 0%, transparent 60%);
+            opacity: 0; transition: opacity 2s ease; z-index: 50;
+        }
+
+        .fracture-line {
+            width: 2px; height: 150px; background: #fff;
+            box-shadow: 0 0 15px #00ffff, 0 0 30px #fff;
+            animation: pulse-crack 0.1s infinite alternate;
+            margin-bottom: 30px; border-radius: 50%;
+        }
+        @keyframes pulse-crack {
+            0% { transform: scaleY(1) skewX(2deg); opacity: 0.8; }
+            100% { transform: scaleY(1.1) skewX(-2deg); opacity: 1; }
+        }
+
+        /* 3. SCREEN EFFECTS & VIDEO */
         #reality-crack {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0, 255, 255, 0.1); backdrop-filter: blur(25px);
@@ -55,7 +73,7 @@
             transition: opacity 0.6s ease-in-out;
         }
 
-        /* 2. UI STYLES */
+        /* 4. UI STYLES */
         .content-box { position: absolute; text-align: center; transition: opacity 1s ease; z-index: 10; width: 100%; }
         .title { color: #00ffff; letter-spacing: 12px; font-size: 0.7rem; font-weight: 200; margin-bottom: 25px; text-transform: uppercase; opacity: 0.6;}
         .message { line-height: 2.5; font-size: 1.1rem; font-weight: 200; letter-spacing: 1.5px; margin-bottom: 40px; color: rgba(255, 255, 255, 0.9); }
@@ -68,22 +86,11 @@
             font-family: 'Inter', sans-serif; font-weight: 200;
         }
         .glitch-btn { border-color: #ff3333; color: #ff3333; font-family: monospace; margin-top: 20px; }
-        .final-btn { border-color: #fff; color: #fff; box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); margin-top: 15px; }
+        .final-btn { border-color: #fff; color: #fff; box-shadow: 0 0 20px rgba(0, 255, 255, 0.4); background: rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
 
         .system-shake { animation: hard-shake 0.3s ease-in-out; filter: invert(1); }
         @keyframes hard-shake { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-5px, 5px); } 50% { transform: translate(5px, -5px); } }
 
-        /* 3. XIAO MING BOX */
-        #xiao-ming-box {
-            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(50px);
-            background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(0, 255, 255, 0.3);
-            backdrop-filter: blur(10px); padding: 25px 30px; border-radius: 15px;
-            width: 85%; max-width: 420px; opacity: 0; transition: all 1.5s ease-out; z-index: 50;
-        }
-        #xiao-ming-box.show-dialogue { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
-        
-        .avatar-name { color: #00ffff; font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 12px; font-weight: bold; }
-        .avatar-text { color: #fff; font-size: 0.95rem; font-weight: 200; line-height: 1.6; }
     </style>
 </head>
 <body>
@@ -93,6 +100,11 @@
     <div class="stars-container" id="stars"></div>
     
     <div id="classroom-preview"></div>
+
+    <div id="anomaly-layer">
+        <div class="fracture-line"></div>
+        <button class="btn final-btn" onclick="crackReality()">[ CHECK_ANOMALY ]</button>
+    </div>
 
     <div class="video-container" id="vid-wrap">
         <video id="bgVideo" loop playsinline muted>
@@ -122,15 +134,6 @@
         <div class="message" style="color:#00ffff; font-family: monospace; font-size: 0.8rem; line-height: 2;">
             SYSTEM SYNC SUCCESSFUL.<br>
             ESTABLISHING CONNECTION...
-        </div>
-    </div>
-
-    <div id="xiao-ming-box">
-        <div class="avatar-name">XIAO MING</div>
-        <div class="avatar-text" id="xm-text">
-            Wait... it worked? You broke through. You're in the empty classroom... 
-            <br>
-            <button class="btn final-btn" style="padding: 10px 20px; font-size: 0.7rem;" onclick="crackReality()">[ OBSERVE REALITY ]</button>
         </div>
     </div>
 
@@ -191,42 +194,45 @@
                     techno.style.opacity = '0';
                     setTimeout(() => {
                         techno.style.display = 'none';
-                        showClassroomAndDialogue();
+                        showClassroomAndAnomaly(); // TRIGGER NEW PHASE
                     }, 1000);
                 }, 3000);
             }, 800);
         }
 
-        // STEP-BY-STEP: Show the classroom image, wait, THEN Xiao Ming talks
-        function showClassroomAndDialogue() {
+        // STEP-BY-STEP: Show Classroom -> Wait -> Show Crack
+        function showClassroomAndAnomaly() {
             const preview = document.getElementById('classroom-preview');
             const stars = document.getElementById('stars');
-            const xiaoMing = document.getElementById('xiao-ming-box');
+            const anomalyLayer = document.getElementById('anomaly-layer');
             
             stars.style.opacity = '0'; // Fade out stars
             preview.style.display = 'block';
             
             setTimeout(() => {
-                preview.style.opacity = '1'; // Slowly fade in the empty classroom
+                preview.style.opacity = '1'; // Fade in empty classroom
                 
-                // Let her look at the empty classroom for 3.5 seconds to build mystery
+                // Wait 4 seconds in the quiet classroom, then the system cracks
                 setTimeout(() => {
-                    xiaoMing.classList.add('show-dialogue');
-                }, 3500);
+                    anomalyLayer.style.display = 'flex';
+                    setTimeout(() => {
+                        anomalyLayer.style.opacity = '1';
+                    }, 50);
+                }, 4000);
             }, 500);
         }
 
-        // FINAL REVEAL: The button triggers the white flash and the video of YOU
+        // FINAL REVEAL: Triggered by the [ CHECK_ANOMALY ] button
         function crackReality() {
             const crack = document.getElementById('reality-crack');
             const flash = document.getElementById('flash');
             const video = document.getElementById('bgVideo');
             const videoWrap = document.getElementById('vid-wrap');
-            const xmText = document.getElementById('xm-text');
             const preview = document.getElementById('classroom-preview');
+            const anomalyLayer = document.getElementById('anomaly-layer');
 
-            // Change Xiao Ming's text to show she found you
-            xmText.innerHTML = "Look... he's right there, working on your story. It's beautiful, isn't it?";
+            // Instantly hide the crack and button
+            anomalyLayer.style.display = 'none'; 
             
             crack.style.display = 'block';
             setTimeout(() => { crack.style.opacity = '1'; }, 50);
@@ -235,16 +241,16 @@
             setTimeout(() => {
                 flash.style.opacity = '1'; // The big white flash
                 setTimeout(() => {
-                    // Hide the still image
+                    // Clean up old layers
                     preview.style.display = 'none';
                     crack.style.display = 'none';
                     document.body.classList.remove('system-shake');
                     
-                    // Show the video
+                    // Reveal Video
                     videoWrap.style.opacity = '1';
                     video.play();
                     
-                    // Fade out the flash
+                    // Fade out flash
                     flash.style.opacity = '0';
                 }, 600);
             }, 1000);

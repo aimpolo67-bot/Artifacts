@@ -14,14 +14,13 @@
             perspective: 1000px;
         }
 
-        /* 1. SPARKING STARS BACKGROUND (Shown First) */
+        /* 1. SPARKING STARS BACKGROUND */
         .stars-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
             z-index: -2;
         }
 
-        /* Simple Star Animation */
         .star {
             position: absolute; background: white; border-radius: 50%;
             opacity: 0.5; animation: twinkle var(--duration) infinite;
@@ -31,21 +30,21 @@
             50% { opacity: 1; transform: scale(1.2); }
         }
 
-        /* 2. THE VIDEO BACKGROUND (Hidden initially) */
+        /* 2. VIDEO BACKGROUND (Starts very dim) */
         .video-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-            z-index: -1; opacity: 0; transition: opacity 2s ease;
+            z-index: -1; opacity: 0; transition: opacity 4s ease; /* Slower fade in */
         }
         video {
             width: 100vw; height: 100vh; object-fit: cover;
-            filter: brightness(0.6);
+            filter: brightness(0.4); /* Lower brightness for clarity */
         }
         .show-video { opacity: 1 !important; }
 
         /* 3. THE UI BOXES */
         .content-box {
             position: absolute; text-align: center; 
-            transition: opacity 1.5s ease; z-index: 10; width: 100%;
+            transition: opacity 1s ease; z-index: 10; width: 100%;
         }
         
         .title { color: #00ffff; letter-spacing: 12px; font-size: 0.7rem; font-weight: 200; margin-bottom: 25px; text-transform: uppercase; opacity: 0.6;}
@@ -59,7 +58,7 @@
             font-family: 'Inter', sans-serif; font-weight: 200;
         }
 
-        /* 4. GLITCH & LOADING STYLES */
+        /* 4. GLITCH & LOADING */
         #ui-glitch { display: none; opacity: 0; color: #ff3333; font-family: monospace; text-align: center;}
         
         .glitch-btn {
@@ -67,6 +66,9 @@
             padding: 15px 30px; font-size: 0.8rem; cursor: pointer; transition: 0.3s;
             margin-top: 20px; letter-spacing: 3px; font-family: monospace;
         }
+        
+        /* Final Reveal Button */
+        #final-check-btn { display: none; border-color: #00ffff; color: #00ffff; }
 
         .system-shake { animation: hard-shake 0.3s ease-in-out; filter: invert(1); }
         @keyframes hard-shake {
@@ -112,6 +114,7 @@
             UNSAVED_FRAGMENT_DETECTED
         </div>
         <button class="glitch-btn" id="restore-btn" onclick="startLoading()">[ RESTORE_FRAGMENT_DATA ]</button>
+        <button class="glitch-btn" id="final-check-btn" onclick="revealFinal()">[ VIEW_FRAGMENT ]</button>
     </div>
 
     <div id="xiao-ming-box">
@@ -120,7 +123,7 @@
     </div>
 
     <script>
-        // Generate Stars
+        // Stars Generation
         const starContainer = document.getElementById('stars');
         for (let i = 0; i < 100; i++) {
             const star = document.createElement('div');
@@ -150,21 +153,23 @@
         }
 
         function startLoading() {
-            const btn = document.getElementById('restore-btn');
+            const restoreBtn = document.getElementById('restore-btn');
+            const finalBtn = document.getElementById('final-check-btn');
             const status = document.getElementById('status-text');
             
-            btn.style.pointerEvents = 'none';
-            btn.innerText = "[ INITIALIZING... ]";
+            restoreBtn.style.display = 'none'; // Hide first button
             
             let progress = 0;
+            // Longer loading speed (500ms per 10% = 5 seconds total)
             const interval = setInterval(() => {
-                progress += 10;
+                progress += 5;
                 status.innerHTML = `RESTORING DATA... ${progress}%`;
                 if (progress >= 100) {
                     clearInterval(interval);
-                    revealFinal();
+                    status.innerHTML = "FRAGMENT RESTORED SUCCESSFULLY";
+                    finalBtn.style.display = 'inline-block'; // Show final check button
                 }
-            }, 200); // Adjust speed of loading here
+            }, 250); 
         }
 
         function revealFinal() {
@@ -176,12 +181,13 @@
             uiGlitch.style.opacity = '0';
             setTimeout(() => { uiGlitch.style.display = 'none'; }, 1000);
 
+            // Slower fade in (4 seconds defined in CSS)
             videoWrap.classList.add('show-video');
             video.play();
 
             setTimeout(() => {
                 xiaoMingBox.classList.add('show-dialogue');
-            }, 3000);
+            }, 5000); // Delayed dialogue to let her see the video first
         }
     </script>
 </body>

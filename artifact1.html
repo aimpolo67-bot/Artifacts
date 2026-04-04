@@ -26,11 +26,11 @@
         }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
 
-        /* PREVIEW IMAGE: The Anime Classroom */
+        /* THE CLASSROOM (First Destination) */
         #classroom-preview {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: url('classroom.jpg') no-repeat center center; 
-            background-size: cover; filter: blur(15px) brightness(0.4);
+            background-size: cover; filter: brightness(0.6);
             display: none; opacity: 0; transition: 3s ease; z-index: -4;
         }
 
@@ -45,7 +45,7 @@
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
             z-index: -1; opacity: 0; transition: opacity 3s ease;
         }
-        video { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6); }
+        video { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7); }
 
         .white-flash {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -66,35 +66,22 @@
             font-family: 'Inter', sans-serif; font-weight: 200;
         }
         .glitch-btn { border-color: #ff3333; color: #ff3333; font-family: monospace; margin-top: 20px; }
+        .final-btn { border-color: #fff; color: #fff; box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); }
 
         .system-shake { animation: hard-shake 0.3s ease-in-out; filter: invert(1); }
         @keyframes hard-shake { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-5px, 5px); } 50% { transform: translate(5px, -5px); } }
 
-        /* THE SECRET TRIGGER TEXT */
-        #hidden-trigger-text {
-            position: fixed; bottom: 15%; left: 50%; transform: translateX(-50%);
-            color: #00ffff; font-family: 'Inter', sans-serif; font-weight: 200;
-            letter-spacing: 15px; font-size: 0.65rem; text-transform: uppercase;
-            display: none; opacity: 0; z-index: 20;
-            animation: pulse-text 3s infinite ease-in-out;
-            pointer-events: none;
-        }
-        @keyframes pulse-text { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.8; text-shadow: 0 0 10px rgba(0, 255, 255, 0.5); } }
-
-        /* INVISIBLE TOP LAYER TO CATCH THE CLICK */
-        #click-target {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: 200; display: none; cursor: pointer;
-        }
-
         /* 3. XIAO MING BOX */
         #xiao-ming-box {
             position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(50px);
-            background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px); padding: 20px 30px; border-radius: 15px;
-            width: 80%; max-width: 400px; opacity: 0; transition: all 1.5s ease-out; z-index: 50;
+            background: rgba(0, 0, 0, 0.8); border: 1px solid rgba(0, 255, 255, 0.3);
+            backdrop-filter: blur(10px); padding: 25px 30px; border-radius: 15px;
+            width: 85%; max-width: 420px; opacity: 0; transition: all 1.5s ease-out; z-index: 50;
         }
-        #xiao-ming-box.show-dialogue { opacity: 1; transform: translateX(-50%) translateY(0); }
+        #xiao-ming-box.show-dialogue { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+        
+        .avatar-name { color: #00ffff; font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 12px; font-weight: bold; }
+        .avatar-text { color: #fff; font-size: 0.95rem; font-weight: 200; line-height: 1.6; }
     </style>
 </head>
 <body>
@@ -102,10 +89,8 @@
     <div class="white-flash" id="flash"></div>
     <div id="reality-crack"></div>
     <div class="stars-container" id="stars"></div>
-    <div id="classroom-preview"></div>
-    <div id="hidden-trigger-text">T O U C H &nbsp; A N Y W H E R E</div>
     
-    <div id="click-target" onclick="crackReality()"></div>
+    <div id="classroom-preview"></div>
 
     <div class="video-container" id="vid-wrap">
         <video id="bgVideo" loop playsinline muted>
@@ -139,9 +124,11 @@
     </div>
 
     <div id="xiao-ming-box">
-        <div style="color: #00ffff; font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 8px;">XIAO MING</div>
-        <div style="color: #fff; font-size: 0.95rem; font-weight: 200; line-height: 1.6;">
-            Wait... it worked? You broke through. Look... he's right there, working on your story.
+        <div class="avatar-name">XIAO MING</div>
+        <div class="avatar-text" id="xm-text">
+            Wait... it worked? You broke through. You're in the classroom... 
+            <br><br>
+            <button class="btn final-btn" style="padding: 10px 20px; font-size: 0.7rem;" onclick="crackReality()">[ OBSERVE REALITY ]</button>
         </div>
     </div>
 
@@ -202,57 +189,58 @@
                     techno.style.opacity = '0';
                     setTimeout(() => {
                         techno.style.display = 'none';
-                        showHiddenClassroom();
+                        showClassroomAndDialogue();
                     }, 1000);
                 }, 3000);
             }, 800);
         }
 
-        function showHiddenClassroom() {
+        // NEW PHASE: Show the classroom image, then Xiao Ming talks
+        function showClassroomAndDialogue() {
             const preview = document.getElementById('classroom-preview');
-            const hiddenText = document.getElementById('hidden-trigger-text');
-            const clickTarget = document.getElementById('click-target');
+            const xiaoMing = document.getElementById('xiao-ming-box');
             
             preview.style.display = 'block';
-            hiddenText.style.display = 'block';
-            clickTarget.style.display = 'block'; // Activates the unblockable touch zone
             
             setTimeout(() => {
-                preview.style.opacity = '1';
-                hiddenText.style.opacity = '1';
+                preview.style.opacity = '1'; // Fade in the classroom
+                
+                // 2 seconds later, Xiao Ming starts talking
+                setTimeout(() => {
+                    xiaoMing.classList.add('show-dialogue');
+                }, 2000);
             }, 50);
         }
 
+        // FINAL PHASE: The button in the dialogue box triggers the video
         function crackReality() {
-            const clickTarget = document.getElementById('click-target');
-            const preview = document.getElementById('classroom-preview');
-            const hiddenText = document.getElementById('hidden-trigger-text');
             const crack = document.getElementById('reality-crack');
             const flash = document.getElementById('flash');
             const video = document.getElementById('bgVideo');
             const videoWrap = document.getElementById('vid-wrap');
-            const xiaoMing = document.getElementById('xiao-ming-box');
+            const xmText = document.getElementById('xm-text');
+            const preview = document.getElementById('classroom-preview');
 
-            clickTarget.style.display = 'none'; // Disable click shield
-            hiddenText.style.opacity = '0'; 
+            // Change Xiao Ming's text and hide the button
+            xmText.innerHTML = "Look... he's right there, working on your story. It's beautiful, isn't it?";
             
             crack.style.display = 'block';
             setTimeout(() => { crack.style.opacity = '1'; }, 50);
             document.body.classList.add('system-shake');
 
             setTimeout(() => {
-                flash.style.opacity = '1';
+                flash.style.opacity = '1'; // White Flash
                 setTimeout(() => {
+                    // Hide the static image and stars
                     preview.style.display = 'none';
                     document.getElementById('stars').style.display = 'none';
                     crack.style.display = 'none';
                     document.body.classList.remove('system-shake');
                     
+                    // Show and play the video of YOU
                     videoWrap.style.opacity = '1';
                     video.play();
                     flash.style.opacity = '0';
-
-                    setTimeout(() => { xiaoMing.classList.add('show-dialogue'); }, 4000);
                 }, 600);
             }, 1000);
         }

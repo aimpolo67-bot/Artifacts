@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artifact Portal | System v2.0</title>
     <style>
         body { 
             background-color: #000; margin: 0; height: 100vh; overflow: hidden;
@@ -8,18 +11,20 @@
             font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; cursor: pointer; 
         }
         
-        /* 2. PARTICLE SYSTEM - Now Tiny Sparking Stars */
         #particles-js { position: absolute; width: 100%; height: 100%; z-index: 0; }
 
         .artifact-zone { 
             position: relative; width: 600px; height: 600px; z-index: 1;
-            transition: transform 3s ease-out, opacity 3s ease-out; /* Slower, gentler zoom */
+            transition: transform 3s ease-out, opacity 3s ease-out;
+            pointer-events: none;
         }
 
         .layer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background-size: 100% 100%; background-position: center; background-repeat: no-repeat;
-            filter: drop-shadow(0 0 10px #00ffff); transition: all 2s ease-in-out;
+            /* Default Cyan Glow - will be changed by Script */
+            filter: drop-shadow(0 0 10px #00ffff); 
+            transition: all 2s ease-in-out;
         }
 
         /* --- GENTLE ACTIVATION STATE --- */
@@ -28,7 +33,7 @@
         .activated .layer-3 { animation: spin-right 4s linear infinite !important; }
         .activated .layer-2 { animation: spin-left 3s linear infinite !important; }
         .activated .layer-1 { animation: spin-right 2s linear infinite !important; filter: brightness(2) drop-shadow(0 0 20px #fff); }
-        .activated { transform: scale(2.5); opacity: 0; } /* Less aggressive zoom */
+        .activated { transform: scale(2.5); opacity: 0; }
 
         /* --- BASE ROTATIONS --- */
         .layer-5 { background-image: url('5.png'); animation: spin-right 45s linear infinite; z-index: 1; }
@@ -40,8 +45,7 @@
         @keyframes spin-right { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes spin-left { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
         
-        /* 3. CHINESE GREETING & PROMPT */
-        .ui-container { position: absolute; bottom: 10%; text-align: center; z-index: 10; }
+        .ui-container { position: absolute; bottom: 10%; text-align: center; z-index: 10; pointer-events: none; }
         .touch-prompt { color: #00ffff; letter-spacing: 8px; font-weight: bold; text-shadow: 0 0 10px #00ffff; animation: pulse 2s infinite; }
         .chinese-greet { color: #fff; font-size: 1.2rem; margin-top: 15px; opacity: 0; transition: opacity 2s; letter-spacing: 4px; }
         .show-greet { opacity: 1; }
@@ -66,56 +70,59 @@
 
     <div class="ui-container">
         <div class="touch-prompt" id="prompt">TOUCH ANYWHERE TO BEGIN</div>
-        <div class="chinese-greet" id="greet">欢迎来到我们的世界</div> 
+        <div class="chinese-greet" id="greet">The path is now open</div> 
     </div>
 
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        /* UPDATED: Tiny Sparking Stars Configuration */
+        /* 1. SPARKING STARS CONFIG */
         particlesJS("particles-js", {
             "particles": {
                 "number": { "value": 150, "density": { "enable": true, "value_area": 800 } },
                 "color": { "value": "#ffffff" },
                 "shape": { "type": "circle" },
-                "opacity": { 
-                    "value": 1, 
-                    "random": true, 
-                    "anim": { "enable": true, "speed": 1.5, "opacity_min": 0.1, "sync": false } 
-                },
-                "size": { 
-                    "value": 1.5, 
-                    "random": true, 
-                    "anim": { "enable": true, "speed": 2, "size_min": 0.1, "sync": false } 
-                },
+                "opacity": { "value": 1, "random": true, "anim": { "enable": true, "speed": 1.5, "opacity_min": 0.1, "sync": false } },
+                "size": { "value": 1.5, "random": true, "anim": { "enable": true, "speed": 2, "size_min": 0.1, "sync": false } },
                 "line_linked": { "enable": false },
-                "move": { 
-                    "enable": true, 
-                    "speed": 0.3, 
-                    "direction": "none", 
-                    "random": true, 
-                    "straight": false, 
-                    "out_mode": "out" 
-                }
+                "move": { "enable": true, "speed": 0.3, "direction": "none", "random": true, "straight": false, "out_mode": "out" }
             }
         });
 
+        /* 2. DYNAMIC COLOR LOGIC */
+        const urlParams = new URLSearchParams(window.location.search);
+        const artifactID = urlParams.get('id') || '1';
+
+        const themes = {
+            "1": { color: "#00ffff", next: "artifact1.html" }, // Cyan
+            "2": { color: "#ffd700", next: "artifact2.html" }, // Gold
+            "3": { color: "#ff3131", next: "artifact3.html" }  // Red
+        };
+
+        const currentTheme = themes[artifactID] || themes["1"];
+
+        // Apply theme color to rings and text
+        document.querySelectorAll('.layer').forEach(layer => {
+            layer.style.filter = `drop-shadow(0 0 15px ${currentTheme.color})`;
+        });
+        document.getElementById('prompt').style.color = currentTheme.color;
+        document.getElementById('prompt').style.textShadow = `0 0 10px ${currentTheme.color}`;
+
+        /* 3. SEQUENCE LOGIC */
         let launched = false;
         function beginSequence() {
             if (launched) return;
             launched = true;
 
-            // Start Audio
-            document.getElementById('magicHum').play();
-            document.getElementById('chime').play();
+            document.getElementById('magicHum').play().catch(e => {});
+            document.getElementById('chime').play().catch(e => {});
 
-            // Show Chinese Greeting
             document.getElementById('prompt').style.display = 'none';
             document.getElementById('greet').classList.add('show-greet');
-            
-            // Trigger Gentle Activation
             document.getElementById('portal').classList.add('activated');
 
-            setTimeout(() => { window.location.href = "welcome.html"; }, 4000); 
+            setTimeout(() => { 
+                window.location.href = currentTheme.next; 
+            }, 4000); 
         }
     </script>
 </body>

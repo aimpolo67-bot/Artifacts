@@ -17,7 +17,7 @@
         .stars-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-            z-index: -5; transition: opacity 3s ease;
+            z-index: -5; transition: opacity 2s ease;
         }
 
         .star {
@@ -29,32 +29,33 @@
         #classroom-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: url('classroom.png') no-repeat center center; 
-            background-size: contain; background-color: #000;
-            filter: brightness(0.35); display: none; opacity: 0; transition: opacity 4s ease; z-index: -4; 
+            background-size: cover; /* Changed to cover for full immersion */
+            filter: brightness(0.3); display: none; opacity: 0; transition: opacity 4s ease; z-index: -4; 
         }
 
-        /* 2. THE STORY CONTENT */
-        #story-box {
-            position: relative; max-width: 85%; text-align: center;
-            display: none; opacity: 0; transition: opacity 4s ease; z-index: 50;
+        /* 2. UI & STORY BOX */
+        .content-box { 
+            position: absolute; text-align: center; width: 85%; 
+            transition: all 1.5s ease; z-index: 10; 
         }
-
-        .story-text {
-            font-size: 1.1rem; line-height: 2.2; font-weight: 200;
-            letter-spacing: 1.5px; color: rgba(255, 255, 255, 0.95);
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-        }
-
-        /* 3. UI COMPONENTS */
-        .content-box { position: absolute; text-align: center; transition: 1.5s ease; z-index: 10; width: 100%; }
-        .title { color: #00ffff; letter-spacing: 12px; font-size: 0.7rem; text-transform: uppercase; opacity: 0.6; margin-bottom: 25px;}
-        .message { line-height: 2.5; font-size: 1.1rem; font-weight: 200; letter-spacing: 1.5px; margin-bottom: 40px; }
         
+        .title { 
+            color: #00ffff; letter-spacing: 8px; font-size: 0.7rem; 
+            text-transform: uppercase; opacity: 0.6; margin-bottom: 20px;
+        }
+
+        .message, .story-text { 
+            line-height: 1.8; font-size: 1rem; font-weight: 200; 
+            letter-spacing: 1px; color: rgba(255, 255, 255, 0.9);
+        }
+
         .btn {
             background: none; border: 1px solid rgba(0, 255, 255, 0.4);
-            color: #00ffff; padding: 15px 45px; font-size: 0.8rem; letter-spacing: 5px; cursor: pointer; transition: 0.5s;
+            color: #00ffff; padding: 12px 35px; font-size: 0.75rem; 
+            letter-spacing: 4px; cursor: pointer; transition: 0.5s; margin-top: 30px;
         }
-        .btn:hover { background: rgba(0, 255, 255, 0.1); border-color: #00ffff; }
+
+        #story-box { display: none; opacity: 0; }
 
         .white-flash {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
@@ -68,29 +69,30 @@
     <div class="stars-container" id="stars"></div>
     <div id="classroom-bg"></div>
 
-    <div id="story-box">
-        <div class="title">The Sanctuary</div>
-        <div class="story-text">
-            "I wanted to build a place where time stops.<br>
-            A secret classroom where it’s just us and the stories.<br><br>
-            No matter how busy the world gets,<br>
-            this fragment of my heart belongs to you."
-        </div>
-    </div>
-
     <div class="content-box" id="ui-1">
         <div class="title">Artifact #01</div>
         <div class="message">
             "I built something I have never done before,<br>
+            a secret piece that only you can unlock,<br>
             and I wanted you to have it."
         </div>
         <button class="btn" onclick="enterSanctuary()">[ ACCEPT ]</button>
     </div>
 
+    <div class="content-box" id="story-box">
+        <div class="title">The Sanctuary</div>
+        <div class="story-text">
+            "I wanted to build a place where time stops.<br>
+            A secret classroom where it’s just us.<br><br>
+            No matter how busy the world gets,<br>
+            this fragment of my heart belongs to you."
+        </div>
+    </div>
+
     <script>
         // Star Background
         const sc = document.getElementById('stars');
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 40; i++) {
             const s = document.createElement('div');
             s.className = 'star';
             s.style.left = Math.random() * 100 + 'vw';
@@ -108,26 +110,22 @@
             const story = document.getElementById('story-box');
             const stars = document.getElementById('stars');
 
-            // 1. Fade out the first UI
             ui1.style.opacity = '0';
             
             setTimeout(() => {
                 ui1.style.display = 'none';
-                // 2. Brief white flash for a "magical" transition
                 flash.style.opacity = '1';
                 
                 setTimeout(() => {
-                    // 3. Swap the background while screen is white
                     stars.style.opacity = '0';
                     classroom.style.display = 'block';
                     classroom.style.opacity = '1';
                     flash.style.opacity = '0';
 
-                    // 4. Fade in the final story
                     setTimeout(() => {
                         story.style.display = 'block';
                         setTimeout(() => story.style.opacity = '1', 50);
-                    }, 2500);
+                    }, 2000);
                 }, 600);
             }, 800);
         }

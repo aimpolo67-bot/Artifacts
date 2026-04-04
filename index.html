@@ -5,11 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Artifact Portal | System v2.0</title>
     <style>
-        body { 
-            background-color: #000; margin: 0; height: 100vh; overflow: hidden;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; cursor: pointer; 
-        }
+        body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh; /* Standard fallback */
+    height: 100dvh; /* Dynamic Viewport Height - Fixes mobile cropping */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #000;
+    overflow: hidden;
+}
+
+.magic-circle {
+    width: 90vw; /* Responsive width based on screen size */
+    max-width: 500px; /* Prevents it from getting too huge on tablets */
+    height: auto; /* Maintains the perfect circle aspect ratio */
+    object-fit: contain; /* Ensures the whole image fits inside the box */
+}
         
         #particles-js { position: absolute; width: 100%; height: 100%; z-index: 0; }
 

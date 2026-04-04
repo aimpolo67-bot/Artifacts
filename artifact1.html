@@ -27,12 +27,12 @@
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
 
         /* THE CLASSROOM (First Destination) */
-        #classroom-preview {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: url('classroom.jpg') no-repeat center center; 
-            background-size: cover; filter: brightness(0.5);
-            display: none; opacity: 0; transition: opacity 3s ease; z-index: -3; /* Fixed Layer Priority */
-        }
+#classroom-preview {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+    background: url('classroom.png') no-repeat center center; /* <-- CHANGED TO .png HERE */
+    background-size: cover; filter: brightness(0.5);
+    display: none; opacity: 0; transition: opacity 3s ease; z-index: -3; 
+}
 
         /* THE REALITY CRACK */
         #reality-crack {

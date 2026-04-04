@@ -17,7 +17,7 @@
         .stars-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-            z-index: -5;
+            z-index: -5; transition: opacity 2s ease;
         }
 
         .star {
@@ -30,8 +30,8 @@
         #classroom-preview {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: url('classroom.jpg') no-repeat center center; 
-            background-size: cover; filter: brightness(0.6);
-            display: none; opacity: 0; transition: 3s ease; z-index: -4;
+            background-size: cover; filter: brightness(0.5);
+            display: none; opacity: 0; transition: opacity 3s ease; z-index: -3; /* Fixed Layer Priority */
         }
 
         /* THE REALITY CRACK */
@@ -43,7 +43,7 @@
 
         .video-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-            z-index: -1; opacity: 0; transition: opacity 3s ease;
+            z-index: -1; opacity: 0; transition: opacity 2s ease;
         }
         video { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.7); }
 
@@ -66,7 +66,7 @@
             font-family: 'Inter', sans-serif; font-weight: 200;
         }
         .glitch-btn { border-color: #ff3333; color: #ff3333; font-family: monospace; margin-top: 20px; }
-        .final-btn { border-color: #fff; color: #fff; box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); }
+        .final-btn { border-color: #fff; color: #fff; box-shadow: 0 0 15px rgba(0, 255, 255, 0.2); margin-top: 15px; }
 
         .system-shake { animation: hard-shake 0.3s ease-in-out; filter: invert(1); }
         @keyframes hard-shake { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-5px, 5px); } 50% { transform: translate(5px, -5px); } }
@@ -126,8 +126,8 @@
     <div id="xiao-ming-box">
         <div class="avatar-name">XIAO MING</div>
         <div class="avatar-text" id="xm-text">
-            Wait... it worked? You broke through. You're in the classroom... 
-            <br><br>
+            Wait... it worked? You broke through. You're in the empty classroom... 
+            <br>
             <button class="btn final-btn" style="padding: 10px 20px; font-size: 0.7rem;" onclick="crackReality()">[ OBSERVE REALITY ]</button>
         </div>
     </div>
@@ -195,24 +195,26 @@
             }, 800);
         }
 
-        // NEW PHASE: Show the classroom image, then Xiao Ming talks
+        // STEP-BY-STEP: Show the classroom image, wait, THEN Xiao Ming talks
         function showClassroomAndDialogue() {
             const preview = document.getElementById('classroom-preview');
+            const stars = document.getElementById('stars');
             const xiaoMing = document.getElementById('xiao-ming-box');
             
+            stars.style.opacity = '0'; // Fade out stars
             preview.style.display = 'block';
             
             setTimeout(() => {
-                preview.style.opacity = '1'; // Fade in the classroom
+                preview.style.opacity = '1'; // Slowly fade in the empty classroom
                 
-                // 2 seconds later, Xiao Ming starts talking
+                // Let her look at the empty classroom for 3.5 seconds to build mystery
                 setTimeout(() => {
                     xiaoMing.classList.add('show-dialogue');
-                }, 2000);
-            }, 50);
+                }, 3500);
+            }, 500);
         }
 
-        // FINAL PHASE: The button in the dialogue box triggers the video
+        // FINAL REVEAL: The button triggers the white flash and the video of YOU
         function crackReality() {
             const crack = document.getElementById('reality-crack');
             const flash = document.getElementById('flash');
@@ -221,7 +223,7 @@
             const xmText = document.getElementById('xm-text');
             const preview = document.getElementById('classroom-preview');
 
-            // Change Xiao Ming's text and hide the button
+            // Change Xiao Ming's text to show she found you
             xmText.innerHTML = "Look... he's right there, working on your story. It's beautiful, isn't it?";
             
             crack.style.display = 'block';
@@ -229,17 +231,18 @@
             document.body.classList.add('system-shake');
 
             setTimeout(() => {
-                flash.style.opacity = '1'; // White Flash
+                flash.style.opacity = '1'; // The big white flash
                 setTimeout(() => {
-                    // Hide the static image and stars
+                    // Hide the still image
                     preview.style.display = 'none';
-                    document.getElementById('stars').style.display = 'none';
                     crack.style.display = 'none';
                     document.body.classList.remove('system-shake');
                     
-                    // Show and play the video of YOU
+                    // Show the video
                     videoWrap.style.opacity = '1';
                     video.play();
+                    
+                    // Fade out the flash
                     flash.style.opacity = '0';
                 }, 600);
             }, 1000);

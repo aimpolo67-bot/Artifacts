@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artifact #01 | The First Fragment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Artifact #01 | Perception Sync</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;500&display=swap');
 
@@ -17,59 +17,84 @@
         .stars-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-            z-index: -3;
+            z-index: -5;
         }
 
-        /* The Techno Room (Grid Effect) */
+        .star {
+            position: absolute; background: white; border-radius: 50%;
+            opacity: 0.5; animation: twinkle var(--duration) infinite;
+        }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
+
+        /* THE TECHNO ROOM (Digital Grid + Blurred Classroom) */
         #techno-room {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-image: 
-                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
-            background-size: 50px 50px;
-            background-position: center;
-            display: none; opacity: 0; transition: 2s ease; z-index: -2;
+                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
+            background-size: 50px 50px; display: none; opacity: 0; transition: 2s ease; z-index: -3;
+        }
+
+        /* PREVIEW IMAGE: This is where she sees the classroom first */
+        #classroom-preview {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: url('classroom_preview.jpg') no-repeat center center; /* Put a nice anime classroom image here */
+            background-size: cover; filter: blur(15px) brightness(0.3);
+            display: none; opacity: 0; transition: 3s ease; z-index: -4;
+        }
+
+        #reality-crack {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 255, 255, 0.1); backdrop-filter: blur(25px);
+            display: none; opacity: 0; z-index: 80; transition: 0.8s ease;
         }
 
         .video-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-            z-index: -1; opacity: 0; transition: opacity 4s ease;
+            z-index: -1; opacity: 0; transition: opacity 3s ease;
         }
-        video { width: 100vw; height: 100vh; object-fit: cover; filter: brightness(0.4); }
+        video { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6); }
 
-        /* 2. UI COMPONENTS */
+        .white-flash {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #fff; opacity: 0; pointer-events: none; z-index: 100;
+            transition: opacity 0.6s ease-in-out;
+        }
+
+        /* 2. UI STYLES */
         .content-box { position: absolute; text-align: center; transition: opacity 1s ease; z-index: 10; width: 100%; }
+        .title { color: #00ffff; letter-spacing: 12px; font-size: 0.7rem; font-weight: 200; margin-bottom: 25px; text-transform: uppercase; opacity: 0.6;}
         .message { line-height: 2.5; font-size: 1.1rem; font-weight: 200; letter-spacing: 1.5px; margin-bottom: 40px; color: rgba(255, 255, 255, 0.9); }
-        
+        .chinese { font-size: 1.5rem; color: #fff; margin-top: 40px; font-weight: 100; letter-spacing: 10px; opacity: 0.5; }
+
         .btn {
             background: none; border: 1px solid rgba(0, 255, 255, 0.4);
             color: #00ffff; padding: 15px 40px; font-size: 0.8rem;
-            letter-spacing: 5px; cursor: pointer; transition: 0.5s; font-family: 'Inter', sans-serif;
+            letter-spacing: 5px; cursor: pointer; transition: 0.5s;
+            font-family: 'Inter', sans-serif; font-weight: 200;
         }
-        .glitch-btn { border-color: #ff3333; color: #ff3333; font-family: monospace; }
+        .glitch-btn { border-color: #ff3333; color: #ff3333; font-family: monospace; margin-top: 20px; }
+        .final-btn { border-color: #fff; color: #fff; box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); }
 
-        /* 3. TRANSITIONS & SHAKE */
-        #ui-glitch, #ui-techno { display: none; opacity: 0; }
         .system-shake { animation: hard-shake 0.3s ease-in-out; filter: invert(1); }
-        @keyframes hard-shake {
-            0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(-5px, 5px); }
-            50% { transform: translate(5px, -5px); }
-        }
+        @keyframes hard-shake { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-5px, 5px); } 50% { transform: translate(5px, -5px); } }
 
-        /* 4. XIAO MING BOX */
+        /* 3. XIAO MING BOX */
         #xiao-ming-box {
             position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(50px);
             background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px); padding: 20px 30px; border-radius: 15px;
-            width: 80%; max-width: 400px; opacity: 0; transition: 1s; z-index: 50;
+            width: 80%; max-width: 400px; opacity: 0; transition: all 1.5s ease-out; z-index: 50;
         }
         #xiao-ming-box.show-dialogue { opacity: 1; transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
 
+    <div class="white-flash" id="flash"></div>
+    <div id="reality-crack"></div>
     <div class="stars-container" id="stars"></div>
+    <div id="classroom-preview"></div>
     <div id="techno-room"></div>
 
     <div class="video-container" id="vid-wrap">
@@ -79,37 +104,63 @@
     </div>
 
     <div class="content-box" id="ui-normal">
-        <div class="message">"I built something secret for you...<br>I wanted you to have it."</div>
+        <div class="title">Artifact #01</div>
+        <div class="message">
+            "I built something I have never done before,<br>
+            a secret piece that only you can unlock."
+        </div>
         <button class="btn" onclick="triggerPhase2()">[ ACCEPT ]</button>
+        <div class="chinese">第一个碎片</div>
     </div>
 
-    <div class="content-box" id="ui-glitch">
-        <div id="status-text" style="color:#ff3333; font-family:monospace; margin-bottom:20px;">SYSTEM_FAILURE // FRAGMENT_DETECTED</div>
-        <button class="btn glitch-btn" id="restore-btn" onclick="startLoading()">[ RESTORE_DATA ]</button>
+    <div class="content-box" id="ui-glitch" style="display:none; opacity:0;">
+        <div id="status-text" style="color:#ff3333; font-family:monospace; margin-bottom:20px; letter-spacing:2px;">
+            SYSTEM_FAILURE // ARTIFACT_OVERLOAD
+        </div>
+        <button class="btn glitch-btn" id="restore-btn" onclick="startLoading()">[ RESTORE_DATA_POINT ]</button>
     </div>
 
-    <div class="content-box" id="ui-techno">
-        <div class="message" style="color:#00ffff;">DATA RESTORED.<br>THE ARCHITECT'S CHAMBER IS OPEN.</div>
-        <button class="btn" style="border-color:#00ffff;" onclick="revealFinal()">[ VIEW_FRAGMENT ]</button>
+    <div class="content-box" id="ui-techno" style="display:none; opacity:0;">
+        <div class="message" style="color:#00ffff; font-family: monospace; font-size: 0.8rem; line-height: 2;">
+            SYSTEM SYNC SUCCESSFUL.<br>
+            LOCATION FOUND: [ ANIME_CLASSROOM_01 ]<br>
+            <span style="color:#fff;">ABILITY UNLOCKED: OBSERVER'S LENS</span>
+        </div>
+        <button class="btn final-btn" onclick="crackReality()">[ USE_ABILITY: SEE_HIM ]</button>
     </div>
 
     <div id="xiao-ming-box">
-        <div style="color:#00ffff; font-size:0.7rem; margin-bottom:8px; text-transform:uppercase;">Xiao Ming</div>
-        <div style="color:#fff; font-size:0.95rem; font-weight:200;">Wait... you actually scanned it and opened it? Wow. I really didn't think you would get this far...</div>
+        <div style="color: #00ffff; font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 8px;">XIAO MING</div>
+        <div style="color: #fff; font-size: 0.95rem; font-weight: 200; line-height: 1.6;">
+            Wait... it worked? You used the lens. Now you can see into his world... he's right there, working on your story.
+        </div>
     </div>
 
     <script>
+        // Star Generation
+        const starContainer = document.getElementById('stars');
+        for (let i = 0; i < 60; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = `${Math.random() * 100}vw`;
+            star.style.top = `${Math.random() * 100}vh`;
+            const size = Math.random() * 2 + 'px';
+            star.style.width = size; star.style.height = size;
+            star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+            starContainer.appendChild(star);
+        }
+
         function triggerPhase2() {
-            const uiNormal = document.getElementById('ui-normal');
-            const uiGlitch = document.getElementById('ui-glitch');
-            uiNormal.style.opacity = '0';
+            const normal = document.getElementById('ui-normal');
+            const glitch = document.getElementById('ui-glitch');
+            normal.style.opacity = '0';
             setTimeout(() => {
-                uiNormal.style.display = 'none';
+                normal.style.display = 'none';
                 document.body.classList.add('system-shake');
                 setTimeout(() => {
                     document.body.classList.remove('system-shake');
-                    uiGlitch.style.display = 'block';
-                    setTimeout(() => { uiGlitch.style.opacity = '1'; }, 50);
+                    glitch.style.display = 'block';
+                    setTimeout(() => { glitch.style.opacity = '1'; }, 50);
                 }, 400);
             }, 800);
         }
@@ -118,50 +169,69 @@
             const btn = document.getElementById('restore-btn');
             const status = document.getElementById('status-text');
             btn.style.display = 'none';
-            
             let progress = 0;
             const interval = setInterval(() => {
                 progress += 5;
-                status.innerHTML = `DECRYPTING... ${progress}%`;
+                status.innerHTML = `FIXING SYSTEM ERROR... ${progress}%`;
                 if (progress >= 100) {
                     clearInterval(interval);
                     enterTechnoPlace();
                 }
-            }, 250); 
+            }, 150); 
         }
 
         function enterTechnoPlace() {
-            const uiGlitch = document.getElementById('ui-glitch');
-            const uiTechno = document.getElementById('ui-techno');
+            const glitch = document.getElementById('ui-glitch');
+            const techno = document.getElementById('ui-techno');
             const technoRoom = document.getElementById('techno-room');
+            const preview = document.getElementById('classroom-preview');
 
-            uiGlitch.style.opacity = '0';
+            glitch.style.opacity = '0';
             setTimeout(() => {
-                uiGlitch.style.display = 'none';
+                glitch.style.display = 'none';
                 technoRoom.style.display = 'block';
+                preview.style.display = 'block';
                 setTimeout(() => { 
                     technoRoom.style.opacity = '1';
-                    uiTechno.style.display = 'block';
-                    setTimeout(() => { uiTechno.style.opacity = '1'; }, 50);
+                    preview.style.opacity = '1';
+                    techno.style.display = 'block';
+                    setTimeout(() => { techno.style.opacity = '1'; }, 50);
                 }, 100);
-            }, 1000);
+            }, 800);
         }
 
-        function revealFinal() {
+        function crackReality() {
             const uiTechno = document.getElementById('ui-techno');
-            const videoWrap = document.getElementById('vid-wrap');
+            const crack = document.getElementById('reality-crack');
+            const flash = document.getElementById('flash');
             const video = document.getElementById('bgVideo');
-            const xiaoMingBox = document.getElementById('xiao-ming-box');
+            const videoWrap = document.getElementById('vid-wrap');
+            const xiaoMing = document.getElementById('xiao-ming-box');
 
             uiTechno.style.opacity = '0';
-            setTimeout(() => { uiTechno.style.display = 'none'; }, 1000);
-
-            videoWrap.style.opacity = '1';
-            video.play();
-
+            
             setTimeout(() => {
-                xiaoMingBox.classList.add('show-dialogue');
-            }, 5000);
+                crack.style.display = 'block';
+                setTimeout(() => { crack.style.opacity = '1'; }, 50);
+                document.body.classList.add('system-shake');
+
+                setTimeout(() => {
+                    flash.style.opacity = '1';
+                    setTimeout(() => {
+                        document.getElementById('techno-room').style.display = 'none';
+                        document.getElementById('stars').style.display = 'none';
+                        document.getElementById('classroom-preview').style.display = 'none';
+                        crack.style.display = 'none';
+                        document.body.classList.remove('system-shake');
+                        
+                        videoWrap.style.opacity = '1';
+                        video.play();
+                        flash.style.opacity = '0';
+
+                        setTimeout(() => { xiaoMing.classList.add('show-dialogue'); }, 4000);
+                    }, 600);
+                }, 1000);
+            }, 500);
         }
     </script>
 </body>

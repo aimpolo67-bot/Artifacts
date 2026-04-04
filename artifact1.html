@@ -19,7 +19,9 @@
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
         }
         video {
-            width: 100%; height: 100%; object-fit: cover;
+            width: 100vw;   /* Force width to 100% of the screen */
+            height: 100vh;  /* Force height to 100% of the screen */
+            object-fit: cover; /* This is the "Magic" line that stops stretching */
             filter: brightness(0.2) blur(15px);
             transition: filter 3s ease;
         }

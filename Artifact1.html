@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artifact #01 | The First Fragment</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;500&display=swap');
+
+        body { 
+            background-color: #000; color: #fff; font-family: 'Inter', sans-serif;
+            display: flex; align-items: center; justify-content: center;
+            height: 100vh; margin: 0; overflow: hidden;
+            perspective: 1000px;
+        }
+
+        /* 1. THE VIDEO BACKGROUND */
+        .video-container {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+        }
+        video {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: brightness(0.2) blur(15px);
+            transition: filter 3s ease;
+        }
+        .clear-video { filter: brightness(0.6) blur(0px) !important; }
+
+        /* 2. THE NORMAL UI (PHASE 1) */
+        .content-box {
+            text-align: center; transition: opacity 1.5s ease, transform 1.5s ease;
+            z-index: 10;
+        }
+        
+        .title { color: #00ffff; letter-spacing: 12px; font-size: 0.7rem; font-weight: 200; margin-bottom: 25px; text-transform: uppercase; opacity: 0.6;}
+        .message { line-height: 2.5; font-size: 1.1rem; font-weight: 200; letter-spacing: 1.5px; margin-bottom: 40px; color: rgba(255, 255, 255, 0.9); }
+        .chinese { font-size: 1.5rem; color: #fff; margin-top: 40px; font-weight: 100; letter-spacing: 10px; opacity: 0.5; }
+
+        .unlock-btn {
+            background: none; border: 1px solid rgba(0, 255, 255, 0.4);
+            color: #00ffff; padding: 15px 40px; font-size: 0.8rem;
+            letter-spacing: 5px; cursor: pointer; transition: 0.5s;
+            font-family: 'Inter', sans-serif; font-weight: 200;
+        }
+        .unlock-btn:hover { background: rgba(0, 255, 255, 0.1); border-color: #00ffff; box-shadow: 0 0 20px rgba(0, 255, 255, 0.2); }
+
+        /* 3. GLITCH EFFECTS (PHASE 2) */
+        .system-shake { animation: hard-shake 0.3s ease-in-out; filter: invert(1); }
+        @keyframes hard-shake {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-5px, 5px); }
+            50% { transform: translate(5px, -5px); }
+            75% { transform: translate(-5px, -5px); }
+        }
+
+        #ui-glitch { display: none; margin-top: 20px; color: #ff3333; font-family: monospace; letter-spacing: 2px; text-align: center;}
+        
+        .glitch-btn {
+            background: none; border: 1px solid #ff3333; color: #ff3333;
+            padding: 15px 30px; font-size: 0.8rem; cursor: pointer; transition: 0.3s;
+            margin-top: 20px; letter-spacing: 3px; font-family: monospace;
+        }
+        .glitch-btn:hover { background: rgba(255, 51, 51, 0.2); box-shadow: 0 0 15px rgba(255, 51, 51, 0.4); }
+
+        /* 4. XIAO MING SURPRISE DIALOGUE */
+        #xiao-ming-box {
+            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(50px);
+            background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px); padding: 20px 30px; border-radius: 15px;
+            width: 80%; max-width: 400px; text-align: left;
+            opacity: 0; pointer-events: none; transition: all 1s ease-out; z-index: 50;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        #xiao-ming-box.show-dialogue {
+            opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto;
+        }
+        .avatar-name {
+            color: #00ffff; font-size: 0.75rem; font-weight: 500; letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase;
+        }
+        .avatar-text {
+            color: #fff; font-size: 0.95rem; font-weight: 200; line-height: 1.6; letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="video-container">
+        <video id="bgVideo" autoplay loop muted playsinline preload="auto">
+            <source src="animated_work.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <div class="content-box" id="ui-normal">
+        <div class="title">Artifact #01</div>
+        <div class="message">
+            "I built something I have never done before,<br>
+            a secret piece that only you can unlock,<br>
+            and I wanted you to have it."
+        </div>
+        <button class="unlock-btn" onclick="triggerPhase2()">[ ACCEPT ]</button>
+        <div class="chinese">第一个碎片</div>
+    </div>
+
+    <div class="content-box" id="ui-glitch">
+        <div style="font-size: 0.8rem; line-height: 2;">
+            SYSTEM_FAILURE // ARTIFACT_OVERLOAD<br>
+            UNSAVED_FRAGMENT_DETECTED
+        </div>
+        <button class="glitch-btn" onclick="revealVideo()">[ RESTORE_FRAGMENT_DATA ]</button>
+    </div>
+
+    <div id="xiao-ming-box">
+        <div class="avatar-name">Xiao Ming</div>
+        <div class="avatar-text">Wait... you actually scanned it and opened it? Wow. I really didn't think you would get this far...</div>
+    </div>
+
+    <script>
+        const uiNormal = document.getElementById('ui-normal');
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth / 2 - e.clientX) / 60;
+            const y = (window.innerHeight / 2 - e.clientY) / 60;
+            uiNormal.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
+        });
+
+        function triggerPhase2() {
+            const body = document.body;
+            const uiGlitch = document.getElementById('ui-glitch');
+            const btn = document.querySelector('.unlock-btn');
+
+            btn.innerText = "[ PROCESSING... ]";
+            btn.style.opacity = "0.5";
+            btn.style.pointerEvents = "none"; 
+
+            setTimeout(() => {
+                body.classList.add('system-shake');
+                setTimeout(() => {
+                    body.classList.remove('system-shake');
+                    uiNormal.style.display = 'none';
+                    uiGlitch.style.display = 'block';
+                }, 400); 
+            }, 1500); 
+        }
+
+        function revealVideo() {
+            const uiGlitch = document.getElementById('ui-glitch');
+            const video = document.getElementById('bgVideo');
+            const xiaoMingBox = document.getElementById('xiao-ming-box');
+
+            uiGlitch.style.transition = "opacity 1s ease";
+            uiGlitch.style.opacity = '0';
+            setTimeout(() => { uiGlitch.style.display = 'none'; }, 1000);
+
+            video.classList.add('clear-video');
+            video.play();
+
+            // XIAO MING POPS UP 3.5 SECONDS LATER
+            setTimeout(() => {
+                xiaoMingBox.classList.add('show-dialogue');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>

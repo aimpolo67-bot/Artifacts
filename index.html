@@ -6,64 +6,55 @@
     <title>Artifact Portal | System v2.0</title>
     <style>
         body, html {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    /* This is the secret for mobile browser bars */
-    height: -webkit-fill-available; 
-    background-color: #000;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            height: 100dvh; /* Fixes mobile browser bars */
+            background-color: #000;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-.portal-container {
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.magic-circle {
-    /* This makes sure it fits the screen height perfectly */
-    height: 90vh; 
-    height: 90dvh;
-    width: auto; /* Keeps the circle round, not an oval */
-    max-width: 95vw; /* Prevents it from touching the left/right edges */
-    object-fit: contain;
-    /* Keeps the image from repeating */
-    background-repeat: no-repeat; 
-}
-        
-        #particles-js { position: absolute; width: 100%; height: 100%; z-index: 0; }
+        #particles-js { 
+            position: absolute; 
+            width: 100%; 
+            height: 100%; 
+            z-index: 0; 
+        }
 
         .artifact-zone { 
-            position: relative; width: 600px; height: 600px; z-index: 1;
+            position: relative; 
+            /* FIXED: These lines make the circle fit any phone screen */
+            width: 85vw; 
+            height: 85vw; 
+            max-width: 500px; 
+            max-height: 500px;
+            z-index: 1;
             transition: transform 3s ease-out, opacity 3s ease-out;
             pointer-events: none;
         }
 
         .layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-size: 100% 100%; background-position: center; background-repeat: no-repeat;
-            /* Default Cyan Glow - will be changed by Script */
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background-size: contain; /* FIXED: Ensures images don't stretch */
+            background-position: center; 
+            background-repeat: no-repeat;
             filter: drop-shadow(0 0 10px #00ffff); 
             transition: all 2s ease-in-out;
         }
 
-        /* --- GENTLE ACTIVATION STATE --- */
-        .activated .layer-5 { animation: spin-right 8s linear infinite !important; opacity: 0.3; }
-        .activated .layer-4 { animation: spin-left 6s linear infinite !important; }
-        .activated .layer-3 { animation: spin-right 4s linear infinite !important; }
-        .activated .layer-2 { animation: spin-left 3s linear infinite !important; }
-        .activated .layer-1 { animation: spin-right 2s linear infinite !important; filter: brightness(2) drop-shadow(0 0 20px #fff); }
+        /* --- ACTIVATION STATE --- */
+        .activated .layer-1 { filter: brightness(2) drop-shadow(0 0 20px #fff); }
         .activated { transform: scale(2.5); opacity: 0; }
 
-        /* --- BASE ROTATIONS --- */
+        /* --- IMAGE ASSIGNMENTS --- */
         .layer-5 { background-image: url('5.png'); animation: spin-right 45s linear infinite; z-index: 1; }
         .layer-4 { background-image: url('4.png'); animation: spin-left 30s linear infinite; z-index: 2; }
         .layer-3 { background-image: url('3.png'); animation: spin-right 20s linear infinite; z-index: 3; }
@@ -73,9 +64,33 @@
         @keyframes spin-right { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes spin-left { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
         
-        .ui-container { position: absolute; bottom: 10%; text-align: center; z-index: 10; pointer-events: none; }
-        .touch-prompt { color: #00ffff; letter-spacing: 8px; font-weight: bold; text-shadow: 0 0 10px #00ffff; animation: pulse 2s infinite; }
-        .chinese-greet { color: #fff; font-size: 1.2rem; margin-top: 15px; opacity: 0; transition: opacity 2s; letter-spacing: 4px; }
+        .ui-container { 
+            position: absolute; 
+            bottom: 12%; 
+            width: 100%;
+            text-align: center; 
+            z-index: 10; 
+            pointer-events: none; 
+        }
+
+        .touch-prompt { 
+            color: #00ffff; 
+            letter-spacing: 4px; 
+            font-size: 0.8rem;
+            font-weight: bold; 
+            text-shadow: 0 0 10px #00ffff; 
+            animation: pulse 2s infinite; 
+        }
+
+        .chinese-greet { 
+            color: #fff; 
+            font-size: 1rem; 
+            margin-top: 15px; 
+            opacity: 0; 
+            transition: opacity 2s; 
+            letter-spacing: 2px; 
+        }
+
         .show-greet { opacity: 1; }
 
         @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }

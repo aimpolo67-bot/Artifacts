@@ -32,7 +32,6 @@
             background: url('classroom.jpg') no-repeat center center; 
             background-size: cover; filter: blur(15px) brightness(0.4);
             display: none; opacity: 0; transition: 3s ease; z-index: -4;
-            cursor: pointer; /* Makes it clickable */
         }
 
         /* THE REALITY CRACK */
@@ -78,9 +77,15 @@
             letter-spacing: 15px; font-size: 0.65rem; text-transform: uppercase;
             display: none; opacity: 0; z-index: 20;
             animation: pulse-text 3s infinite ease-in-out;
-            pointer-events: none; /* Lets the click pass through to the classroom */
+            pointer-events: none;
         }
         @keyframes pulse-text { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.8; text-shadow: 0 0 10px rgba(0, 255, 255, 0.5); } }
+
+        /* INVISIBLE TOP LAYER TO CATCH THE CLICK */
+        #click-target {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: 200; display: none; cursor: pointer;
+        }
 
         /* 3. XIAO MING BOX */
         #xiao-ming-box {
@@ -97,9 +102,10 @@
     <div class="white-flash" id="flash"></div>
     <div id="reality-crack"></div>
     <div class="stars-container" id="stars"></div>
-    
-    <div id="classroom-preview" onclick="crackReality()"></div>
+    <div id="classroom-preview"></div>
     <div id="hidden-trigger-text">T O U C H &nbsp; A N Y W H E R E</div>
+    
+    <div id="click-target" onclick="crackReality()"></div>
 
     <div class="video-container" id="vid-wrap">
         <video id="bgVideo" loop playsinline muted>
@@ -111,7 +117,8 @@
         <div class="title">Artifact #01</div>
         <div class="message">
             "I built something I have never done before,<br>
-            a secret piece that only you can unlock."
+            a secret piece that only you can unlock,<br>
+            and I wanted you to have it."
         </div>
         <button class="btn" onclick="triggerPhase2()">[ ACCEPT ]</button>
         <div class="chinese">第一个碎片</div>
@@ -191,7 +198,6 @@
                 techno.style.display = 'block';
                 setTimeout(() => { techno.style.opacity = '1'; }, 50);
 
-                // Wait 3 seconds, then hide text and show the hidden classroom
                 setTimeout(() => {
                     techno.style.opacity = '0';
                     setTimeout(() => {
@@ -205,19 +211,20 @@
         function showHiddenClassroom() {
             const preview = document.getElementById('classroom-preview');
             const hiddenText = document.getElementById('hidden-trigger-text');
+            const clickTarget = document.getElementById('click-target');
             
             preview.style.display = 'block';
             hiddenText.style.display = 'block';
+            clickTarget.style.display = 'block'; // Activates the unblockable touch zone
             
-            // Fade in the blurred classroom and the secret text
             setTimeout(() => {
                 preview.style.opacity = '1';
                 hiddenText.style.opacity = '1';
             }, 50);
         }
 
-        // This triggers when she touches anywhere on the classroom preview
         function crackReality() {
+            const clickTarget = document.getElementById('click-target');
             const preview = document.getElementById('classroom-preview');
             const hiddenText = document.getElementById('hidden-trigger-text');
             const crack = document.getElementById('reality-crack');
@@ -226,9 +233,8 @@
             const videoWrap = document.getElementById('vid-wrap');
             const xiaoMing = document.getElementById('xiao-ming-box');
 
-            // Disable clicking again
-            preview.style.pointerEvents = 'none';
-            hiddenText.style.opacity = '0'; // Hide the hint text instantly
+            clickTarget.style.display = 'none'; // Disable click shield
+            hiddenText.style.opacity = '0'; 
             
             crack.style.display = 'block';
             setTimeout(() => { crack.style.opacity = '1'; }, 50);

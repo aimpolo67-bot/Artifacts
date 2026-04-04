@@ -26,23 +26,16 @@
         }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
 
-        /* THE TECHNO ROOM (Digital Grid + Blurred Classroom) */
-        #techno-room {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-image: 
-                linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
-            background-size: 50px 50px; display: none; opacity: 0; transition: 2s ease; z-index: -3;
-        }
-
-        /* PREVIEW IMAGE: This is where she sees the classroom first */
+        /* PREVIEW IMAGE: The Anime Classroom */
         #classroom-preview {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: url('classroom_preview.jpg') no-repeat center center; /* Put a nice anime classroom image here */
-            background-size: cover; filter: blur(15px) brightness(0.3);
+            background: url('classroom.jpg') no-repeat center center; 
+            background-size: cover; filter: blur(15px) brightness(0.4);
             display: none; opacity: 0; transition: 3s ease; z-index: -4;
+            cursor: pointer; /* Makes it clickable */
         }
 
+        /* THE REALITY CRACK */
         #reality-crack {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(0, 255, 255, 0.1); backdrop-filter: blur(25px);
@@ -74,10 +67,20 @@
             font-family: 'Inter', sans-serif; font-weight: 200;
         }
         .glitch-btn { border-color: #ff3333; color: #ff3333; font-family: monospace; margin-top: 20px; }
-        .final-btn { border-color: #fff; color: #fff; box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); }
 
         .system-shake { animation: hard-shake 0.3s ease-in-out; filter: invert(1); }
         @keyframes hard-shake { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(-5px, 5px); } 50% { transform: translate(5px, -5px); } }
+
+        /* THE SECRET TRIGGER TEXT */
+        #hidden-trigger-text {
+            position: fixed; bottom: 15%; left: 50%; transform: translateX(-50%);
+            color: #00ffff; font-family: 'Inter', sans-serif; font-weight: 200;
+            letter-spacing: 15px; font-size: 0.65rem; text-transform: uppercase;
+            display: none; opacity: 0; z-index: 20;
+            animation: pulse-text 3s infinite ease-in-out;
+            pointer-events: none; /* Lets the click pass through to the classroom */
+        }
+        @keyframes pulse-text { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.8; text-shadow: 0 0 10px rgba(0, 255, 255, 0.5); } }
 
         /* 3. XIAO MING BOX */
         #xiao-ming-box {
@@ -94,8 +97,9 @@
     <div class="white-flash" id="flash"></div>
     <div id="reality-crack"></div>
     <div class="stars-container" id="stars"></div>
-    <div id="classroom-preview"></div>
-    <div id="techno-room"></div>
+    
+    <div id="classroom-preview" onclick="crackReality()"></div>
+    <div id="hidden-trigger-text">T O U C H &nbsp; A N Y W H E R E</div>
 
     <div class="video-container" id="vid-wrap">
         <video id="bgVideo" loop playsinline muted>
@@ -123,21 +127,18 @@
     <div class="content-box" id="ui-techno" style="display:none; opacity:0;">
         <div class="message" style="color:#00ffff; font-family: monospace; font-size: 0.8rem; line-height: 2;">
             SYSTEM SYNC SUCCESSFUL.<br>
-            LOCATION FOUND: [ ANIME_CLASSROOM_01 ]<br>
-            <span style="color:#fff;">ABILITY UNLOCKED: OBSERVER'S LENS</span>
+            ESTABLISHING CONNECTION...
         </div>
-        <button class="btn final-btn" onclick="crackReality()">[ USE_ABILITY: SEE_HIM ]</button>
     </div>
 
     <div id="xiao-ming-box">
         <div style="color: #00ffff; font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 8px;">XIAO MING</div>
         <div style="color: #fff; font-size: 0.95rem; font-weight: 200; line-height: 1.6;">
-            Wait... it worked? You used the lens. Now you can see into his world... he's right there, working on your story.
+            Wait... it worked? You broke through. Look... he's right there, working on your story.
         </div>
     </div>
 
     <script>
-        // Star Generation
         const starContainer = document.getElementById('stars');
         for (let i = 0; i < 60; i++) {
             const star = document.createElement('div');
@@ -175,63 +176,79 @@
                 status.innerHTML = `FIXING SYSTEM ERROR... ${progress}%`;
                 if (progress >= 100) {
                     clearInterval(interval);
-                    enterTechnoPlace();
+                    showSyncText();
                 }
             }, 150); 
         }
 
-        function enterTechnoPlace() {
+        function showSyncText() {
             const glitch = document.getElementById('ui-glitch');
             const techno = document.getElementById('ui-techno');
-            const technoRoom = document.getElementById('techno-room');
-            const preview = document.getElementById('classroom-preview');
 
             glitch.style.opacity = '0';
             setTimeout(() => {
                 glitch.style.display = 'none';
-                technoRoom.style.display = 'block';
-                preview.style.display = 'block';
-                setTimeout(() => { 
-                    technoRoom.style.opacity = '1';
-                    preview.style.opacity = '1';
-                    techno.style.display = 'block';
-                    setTimeout(() => { techno.style.opacity = '1'; }, 50);
-                }, 100);
+                techno.style.display = 'block';
+                setTimeout(() => { techno.style.opacity = '1'; }, 50);
+
+                // Wait 3 seconds, then hide text and show the hidden classroom
+                setTimeout(() => {
+                    techno.style.opacity = '0';
+                    setTimeout(() => {
+                        techno.style.display = 'none';
+                        showHiddenClassroom();
+                    }, 1000);
+                }, 3000);
             }, 800);
         }
 
+        function showHiddenClassroom() {
+            const preview = document.getElementById('classroom-preview');
+            const hiddenText = document.getElementById('hidden-trigger-text');
+            
+            preview.style.display = 'block';
+            hiddenText.style.display = 'block';
+            
+            // Fade in the blurred classroom and the secret text
+            setTimeout(() => {
+                preview.style.opacity = '1';
+                hiddenText.style.opacity = '1';
+            }, 50);
+        }
+
+        // This triggers when she touches anywhere on the classroom preview
         function crackReality() {
-            const uiTechno = document.getElementById('ui-techno');
+            const preview = document.getElementById('classroom-preview');
+            const hiddenText = document.getElementById('hidden-trigger-text');
             const crack = document.getElementById('reality-crack');
             const flash = document.getElementById('flash');
             const video = document.getElementById('bgVideo');
             const videoWrap = document.getElementById('vid-wrap');
             const xiaoMing = document.getElementById('xiao-ming-box');
 
-            uiTechno.style.opacity = '0';
+            // Disable clicking again
+            preview.style.pointerEvents = 'none';
+            hiddenText.style.opacity = '0'; // Hide the hint text instantly
             
+            crack.style.display = 'block';
+            setTimeout(() => { crack.style.opacity = '1'; }, 50);
+            document.body.classList.add('system-shake');
+
             setTimeout(() => {
-                crack.style.display = 'block';
-                setTimeout(() => { crack.style.opacity = '1'; }, 50);
-                document.body.classList.add('system-shake');
-
+                flash.style.opacity = '1';
                 setTimeout(() => {
-                    flash.style.opacity = '1';
-                    setTimeout(() => {
-                        document.getElementById('techno-room').style.display = 'none';
-                        document.getElementById('stars').style.display = 'none';
-                        document.getElementById('classroom-preview').style.display = 'none';
-                        crack.style.display = 'none';
-                        document.body.classList.remove('system-shake');
-                        
-                        videoWrap.style.opacity = '1';
-                        video.play();
-                        flash.style.opacity = '0';
+                    preview.style.display = 'none';
+                    document.getElementById('stars').style.display = 'none';
+                    crack.style.display = 'none';
+                    document.body.classList.remove('system-shake');
+                    
+                    videoWrap.style.opacity = '1';
+                    video.play();
+                    flash.style.opacity = '0';
 
-                        setTimeout(() => { xiaoMing.classList.add('show-dialogue'); }, 4000);
-                    }, 600);
-                }, 1000);
-            }, 500);
+                    setTimeout(() => { xiaoMing.classList.add('show-dialogue'); }, 4000);
+                }, 600);
+            }, 1000);
         }
     </script>
 </body>

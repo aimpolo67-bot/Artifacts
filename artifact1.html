@@ -2,134 +2,180 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Artifact #01</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artifact #01 | The First Fragment</title>
     <style>
-        body, html {
-            margin: 0; padding: 0; width: 100%; height: 100%;
-            background-color: #000; color: #fff; font-family: sans-serif;
-            overflow: hidden; display: flex; justify-content: center; align-items: center;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;500&display=swap');
+
+        body { 
+            background-color: #000; color: #fff; font-family: 'Inter', sans-serif;
+            display: flex; align-items: center; justify-content: center;
+            height: 100vh; margin: 0; overflow: hidden;
+            perspective: 1000px;
         }
 
-        /* Video Background */
+        /* 1. THE VIDEO BACKGROUND */
         .video-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
         }
         video {
-            width: 100%; height: 100%; object-fit: cover;
-            filter: brightness(0.2) blur(15px); transition: 3s;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            filter: brightness(0.2) blur(15px);
+            transition: filter 3s ease;
         }
         .clear-video { filter: brightness(0.6) blur(0px) !important; }
 
-        /* General Box Styling */
+        /* 2. THE NORMAL UI (PHASE 1) */
         .content-box {
-            position: absolute; text-align: center; width: 90%;
-            transition: opacity 0.8s ease; z-index: 10;
+            position: absolute; /* FIXED: Keeps boxes in the same center spot */
+            text-align: center; 
+            transition: opacity 1.5s ease, transform 1.5s ease;
+            z-index: 10;
+            width: 100%; /* Ensures text doesn't squish */
         }
+        
+        .title { color: #00ffff; letter-spacing: 12px; font-size: 0.7rem; font-weight: 200; margin-bottom: 25px; text-transform: uppercase; opacity: 0.6;}
+        .message { line-height: 2.5; font-size: 1.1rem; font-weight: 200; letter-spacing: 1.5px; margin-bottom: 40px; color: rgba(255, 255, 255, 0.9); }
+        .chinese { font-size: 1.5rem; color: #fff; margin-top: 40px; font-weight: 100; letter-spacing: 10px; opacity: 0.5; }
 
-        .message { line-height: 2; font-size: 1rem; margin-bottom: 30px; letter-spacing: 1px; }
-
-        /* Buttons */
-        .btn {
-            background: none; border: 1px solid #00ffff; color: #00ffff;
-            padding: 15px 40px; font-size: 0.8rem; letter-spacing: 3px;
-            cursor: pointer; text-transform: uppercase;
+        .unlock-btn {
+            background: none; border: 1px solid rgba(0, 255, 255, 0.4);
+            color: #00ffff; padding: 15px 40px; font-size: 0.8rem;
+            letter-spacing: 5px; cursor: pointer; transition: 0.5s;
+            font-family: 'Inter', sans-serif; font-weight: 200;
         }
-        .glitch-btn { border-color: #ff3333; color: #ff3333; margin-top: 20px; }
+        .unlock-btn:hover { background: rgba(0, 255, 255, 0.1); border-color: #00ffff; box-shadow: 0 0 20px rgba(0, 255, 255, 0.2); }
 
-        /* Initial State */
-        #ui-glitch { display: none; opacity: 0; }
-
-        /* Shake Effect */
-        .shake { animation: shake-anim 0.3s ease-in-out; filter: invert(1); }
-        @keyframes shake-anim {
+        /* 3. GLITCH EFFECTS (PHASE 2) */
+        .system-shake { animation: hard-shake 0.3s ease-in-out; filter: invert(1); }
+        @keyframes hard-shake {
             0%, 100% { transform: translate(0, 0); }
             25% { transform: translate(-5px, 5px); }
             50% { transform: translate(5px, -5px); }
+            75% { transform: translate(-5px, -5px); }
         }
 
-        /* Dialogue Box */
+        /* FIXED: Added opacity 0 and centered text properly */
+        #ui-glitch { 
+            display: none; 
+            opacity: 0; 
+            color: #ff3333; 
+            font-family: monospace; 
+            letter-spacing: 2px; 
+            text-align: center;
+        }
+        
+        .glitch-btn {
+            background: none; border: 1px solid #ff3333; color: #ff3333;
+            padding: 15px 30px; font-size: 0.8rem; cursor: pointer; transition: 0.3s;
+            margin-top: 20px; letter-spacing: 3px; font-family: monospace;
+        }
+        .glitch-btn:hover { background: rgba(255, 51, 51, 0.2); box-shadow: 0 0 15px rgba(255, 51, 51, 0.4); }
+
+        /* 4. XIAO MING SURPRISE DIALOGUE */
         #xiao-ming-box {
-            position: fixed; bottom: 30px; width: 85%; max-width: 400px;
-            background: rgba(0,0,0,0.8); border: 1px solid #00ffff;
-            padding: 20px; border-radius: 10px; opacity: 0; transition: 1s;
+            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(50px);
+            background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px); padding: 20px 30px; border-radius: 15px;
+            width: 80%; max-width: 400px; text-align: left;
+            opacity: 0; pointer-events: none; transition: all 1s ease-out; z-index: 50;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        #xiao-ming-box.show-dialogue {
+            opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto;
+        }
+        .avatar-name {
+            color: #00ffff; font-size: 0.75rem; font-weight: 500; letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase;
+        }
+        .avatar-text {
+            color: #fff; font-size: 0.95rem; font-weight: 200; line-height: 1.6; letter-spacing: 0.5px;
         }
     </style>
 </head>
 <body>
 
     <div class="video-container">
-        <video id="bgVideo" loop playsinline muted autoplay>
+        <video id="bgVideo" autoplay loop muted playsinline preload="auto">
             <source src="animated_work.mp4" type="video/mp4">
         </video>
     </div>
 
     <div class="content-box" id="ui-normal">
+        <div class="title">Artifact #01</div>
         <div class="message">
-            "I built something secret for you...<br>I wanted you to have it."
+            "I built something I have never done before,<br>
+            a secret piece that only you can unlock,<br>
+            and I wanted you to have it."
         </div>
-        <button class="btn" onclick="triggerGlitch()">[ ACCEPT ]</button>
+        <button class="unlock-btn" onclick="triggerPhase2()">[ ACCEPT ]</button>
+        <div class="chinese">第一个碎片</div>
     </div>
 
     <div class="content-box" id="ui-glitch">
-        <div style="color: #ff3333; margin-bottom: 20px; font-family: monospace;">
-            SYSTEM_FAILURE // FRAGMENT_DETECTED
+        <div style="font-size: 0.8rem; line-height: 2;">
+            SYSTEM_FAILURE // ARTIFACT_OVERLOAD<br>
+            UNSAVED_FRAGMENT_DETECTED
         </div>
-        <button class="btn glitch-btn" onclick="revealVideo()">[ RESTORE_DATA ]</button>
+        <button class="glitch-btn" onclick="revealVideo()">[ RESTORE_FRAGMENT_DATA ]</button>
     </div>
 
     <div id="xiao-ming-box">
-        <div style="color: #00ffff; font-size: 0.7rem; margin-bottom: 5px;">XIAO MING</div>
-        <div id="dialogue-text" style="font-size: 0.9rem; font-weight: 200;"></div>
+        <div class="avatar-name">Xiao Ming</div>
+        <div class="avatar-text">Wait... you actually scanned it and opened it? Wow. I really didn't think you would get this far...</div>
     </div>
 
     <script>
-        function triggerGlitch() {
-            const normal = document.getElementById('ui-normal');
-            const glitch = document.getElementById('ui-glitch');
-            
-            normal.style.opacity = '0';
+        const uiNormal = document.getElementById('ui-normal');
+        document.addEventListener('mousemove', (e) => {
+            const x = (window.innerWidth / 2 - e.clientX) / 60;
+            const y = (window.innerHeight / 2 - e.clientY) / 60;
+            uiNormal.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
+        });
+
+        function triggerPhase2() {
+            const body = document.body;
+            const uiNormal = document.getElementById('ui-normal');
+            const uiGlitch = document.getElementById('ui-glitch');
+            const btn = document.querySelector('.unlock-btn');
+
+            btn.innerText = "[ PROCESSING... ]";
+            btn.style.opacity = "0.5";
+            btn.style.pointerEvents = "none"; 
+
             setTimeout(() => {
-                normal.style.display = 'none';
-                document.body.classList.add('shake');
-                
+                // FIXED: Fade out normal UI before showing glitch
+                uiNormal.style.opacity = '0';
                 setTimeout(() => {
-                    document.body.classList.remove('shake');
-                    glitch.style.display = 'block';
-                    setTimeout(() => { glitch.style.opacity = '1'; }, 50);
-                }, 300);
-            }, 800);
+                    uiNormal.style.display = 'none';
+                    body.classList.add('system-shake');
+                    setTimeout(() => {
+                        body.classList.remove('system-shake');
+                        uiGlitch.style.display = 'block';
+                        // Fade in glitch UI
+                        setTimeout(() => { uiGlitch.style.opacity = '1'; }, 50);
+                    }, 400); 
+                }, 800);
+            }, 1000); 
         }
 
         function revealVideo() {
-            const glitch = document.getElementById('ui-glitch');
+            const uiGlitch = document.getElementById('ui-glitch');
             const video = document.getElementById('bgVideo');
-            const box = document.getElementById('xiao-ming-box');
-            
-            glitch.style.opacity = '0';
-            setTimeout(() => { glitch.style.display = 'none'; }, 800);
+            const xiaoMingBox = document.getElementById('xiao-ming-box');
+
+            uiGlitch.style.transition = "opacity 1s ease";
+            uiGlitch.style.opacity = '0';
+            setTimeout(() => { uiGlitch.style.display = 'none'; }, 1000);
 
             video.classList.add('clear-video');
-            video.muted = false; // Unmute so she can hear the comedy vibe
             video.play();
 
+            // XIAO MING POPS UP 3.5 SECONDS LATER
             setTimeout(() => {
-                box.style.opacity = '1';
-                typeWriter("Wait... you actually scanned it? I didn't think the system would hold up. You're actually seeing this... wow.");
-            }, 3000);
-        }
-
-        function typeWriter(text) {
-            let i = 0;
-            const element = document.getElementById('dialogue-text');
-            function type() {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                    setTimeout(type, 40);
-                }
-            }
-            type();
+                xiaoMingBox.classList.add('show-dialogue');
+            }, 3500);
         }
     </script>
 </body>

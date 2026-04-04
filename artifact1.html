@@ -26,7 +26,6 @@
         }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 1; transform: scale(1.2); } }
 
-        /* THE CLASSROOM (contain & .png) */
         #classroom-preview {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: url('classroom.png') no-repeat center center; 
@@ -35,53 +34,45 @@
             display: none; opacity: 0; transition: opacity 3s ease; z-index: -4; 
         }
 
-        /* 2. THE TEXTURED REALITY FRACURE (NEW) */
+        /* 2. THE WALL RIFT (Aligned with your image) */
         #fracture-container {
-            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 200px; height: 200px; 
+            position: fixed; 
+            top: 55%; right: 15%; /* Positioned on the wall like your red circle */
+            width: 120px; height: 180px; 
             display: none; opacity: 0; transition: opacity 2s ease; z-index: 50;
         }
 
-        /* Complex texture crack */
         .fracture-texture {
             width: 100%; height: 100%;
-            background: rgba(0, 255, 255, 0.4);
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.8), 0 0 30px #fff;
-            clip-path: polygon(10% 25%, 35% 25%, 35% 10%, 65% 10%, 65% 25%, 90% 25%, 90% 50%, 65% 50%, 65% 35%, 35% 35%, 35% 50%, 10% 50%, 10% 75%, 35% 75%, 35% 90%, 65% 90%, 65% 75%, 90% 75%, 90% 100%, 0% 100%, 0% 0%, 10% 0%);
-            animation: glitch-pulse 0.2s infinite;
-        }
-        @keyframes glitch-pulse {
-            0% { transform: scale(1); opacity: 0.8; filter: hue-rotate(0deg); }
-            50% { transform: scale(1.05); opacity: 1; filter: hue-rotate(15deg); }
-            100% { transform: scale(1); opacity: 0.8; filter: hue-rotate(0deg); }
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(0, 255, 255, 0.4) 50%, transparent 100%);
+            clip-path: polygon(50% 0%, 70% 20%, 100% 50%, 70% 80%, 50% 100%, 30% 80%, 0% 50%, 30% 20%);
+            box-shadow: 0 0 20px #00ffff;
+            animation: rift-throb 1.5s infinite alternate;
         }
 
-        /* Branches of the crack */
-        .fracture-texture::before, .fracture-texture::after {
-            content: ''; position: absolute; background: #fff; box-shadow: 0 0 10px #00ffff;
+        @keyframes rift-throb {
+            0% { transform: scale(0.95); opacity: 0.7; filter: brightness(1); }
+            100% { transform: scale(1.05); opacity: 1; filter: brightness(1.5); }
         }
-        .fracture-texture::before { width: 2px; height: 100px; left: 30px; top: 20px; transform: rotate(-15deg); }
-        .fracture-texture::after { width: 100px; height: 2px; left: 70px; top: 130px; transform: rotate(15deg); }
 
-        /* 3. THE HIDDEN [?] BUTTON (NEAR THE WALL) (NEW) */
+        /* 3. THE HIDDEN INTERACTION (Aligned with the rift) */
         #observer-button-layer {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            display: none; align-items: flex-end; justify-content: flex-end;
-            padding: 50px; /* Moves it into the room corner */
+            position: fixed; 
+            top: 55%; right: 15%; 
+            width: 120px; height: 180px;
+            display: none; align-items: center; justify-content: center;
             opacity: 0; transition: opacity 2s ease; z-index: 60;
-            pointer-events: none; /* Allows click to pass to the button */
         }
         
         .btn-check-anomaly {
-            background: none; border: 1px solid rgba(255, 255, 255, 0.4);
-            color: rgba(255, 255, 255, 0.6); padding: 15px 20px; font-size: 0.75rem;
-            letter-spacing: 5px; cursor: pointer; transition: 0.5s;
-            font-family: 'Inter', sans-serif; text-transform: uppercase;
-            box-shadow: 0 0 10px rgba(0,255,255,0.1); backdrop-filter: blur(5px);
-            pointer-events: auto; /* Makes button clickable */
+            background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(0, 255, 255, 0.5);
+            color: #00ffff; width: 40px; height: 40px; border-radius: 50%;
+            font-size: 0.8rem; cursor: pointer; transition: 0.5s;
+            font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(5px);
         }
         .btn-check-anomaly:hover { 
-            color: #00ffff; border-color: #00ffff; box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); 
+            transform: scale(1.2); box-shadow: 0 0 20px #00ffff; 
         }
 
         /* 4. SCREEN EFFECTS & VIDEO */
@@ -127,7 +118,6 @@
     <div class="white-flash" id="flash"></div>
     <div id="reality-crack"></div>
     <div class="stars-container" id="stars"></div>
-    
     <div id="classroom-preview"></div>
 
     <div id="fracture-container">
@@ -135,7 +125,7 @@
     </div>
 
     <div id="observer-button-layer">
-        <button class="btn-check-anomaly" onclick="crackReality()">[ ? ]</button>
+        <button class="btn-check-anomaly" onclick="crackReality()">?</button>
     </div>
 
     <div class="video-container" id="vid-wrap">
@@ -215,13 +205,11 @@
         function showSyncText() {
             const glitch = document.getElementById('ui-glitch');
             const techno = document.getElementById('ui-techno');
-
             glitch.style.opacity = '0';
             setTimeout(() => {
                 glitch.style.display = 'none';
                 techno.style.display = 'block';
                 setTimeout(() => { techno.style.opacity = '1'; }, 50);
-
                 setTimeout(() => {
                     techno.style.opacity = '0';
                     setTimeout(() => {
@@ -232,7 +220,6 @@
             }, 800);
         }
 
-        // STEP-BY-STEP: Classroom -> Wait -> Show Textured Crack -> Wait -> Show Hidden Button
         function showClassroomAndAnomaly() {
             const preview = document.getElementById('classroom-preview');
             const stars = document.getElementById('stars');
@@ -244,26 +231,17 @@
             
             setTimeout(() => {
                 preview.style.opacity = '1'; 
-                
-                // Wait 4 seconds for the classroom silence, then the textured crack pulses in
                 setTimeout(() => {
                     fracture.style.display = 'block';
+                    buttonLayer.style.display = 'flex';
                     setTimeout(() => {
                         fracture.style.opacity = '1';
-                        
-                        // Wait 3 more seconds after the crack appears, then the hidden button appears in the corner
-                        setTimeout(() => {
-                            buttonLayer.style.display = 'flex';
-                            setTimeout(() => {
-                                buttonLayer.style.opacity = '1';
-                            }, 50);
-                        }, 3000);
+                        buttonLayer.style.opacity = '1';
                     }, 50);
                 }, 4000);
             }, 500);
         }
 
-        // FINAL REVEAL: Triggered by the [ ? ] button
         function crackReality() {
             const crack = document.getElementById('reality-crack');
             const flash = document.getElementById('flash');
@@ -273,7 +251,6 @@
             const fracture = document.getElementById('fracture-container');
             const buttonLayer = document.getElementById('observer-button-layer');
 
-            // Instantly hide the old layers
             fracture.style.display = 'none'; 
             buttonLayer.style.display = 'none';
             
@@ -282,16 +259,13 @@
             document.body.classList.add('system-shake');
 
             setTimeout(() => {
-                flash.style.opacity = '1'; // White Flash
+                flash.style.opacity = '1'; 
                 setTimeout(() => {
                     preview.style.display = 'none';
                     crack.style.display = 'none';
                     document.body.classList.remove('system-shake');
-                    
-                    // Reveal Video
                     videoWrap.style.opacity = '1';
                     video.play();
-                    
                     flash.style.opacity = '0';
                 }, 600);
             }, 1000);

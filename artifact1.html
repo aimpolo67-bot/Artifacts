@@ -2,129 +2,134 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artifact #01 | The First Fragment</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Artifact #01</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;500&display=swap');
-
-        body { 
-            background-color: #000; color: #fff; font-family: 'Inter', sans-serif;
-            display: flex; align-items: center; justify-content: center;
-            height: 100vh; height: 100dvh; margin: 0; overflow: hidden;
-            perspective: 1000px;
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #000; color: #fff; font-family: sans-serif;
+            overflow: hidden; display: flex; justify-content: center; align-items: center;
         }
 
-        .video-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; }
-        video { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.2) blur(15px); transition: filter 3s ease; }
+        /* Video Background */
+        .video-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+        }
+        video {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: brightness(0.2) blur(15px); transition: 3s;
+        }
         .clear-video { filter: brightness(0.6) blur(0px) !important; }
 
-        .content-box { text-align: center; transition: opacity 1.5s ease; z-index: 10; width: 90%; }
-        
-        .unlock-btn {
-            background: none; border: 1px solid rgba(0, 255, 255, 0.4);
-            color: #00ffff; padding: 15px 40px; font-size: 0.8rem;
-            letter-spacing: 5px; cursor: pointer; transition: 0.5s;
+        /* General Box Styling */
+        .content-box {
+            position: absolute; text-align: center; width: 90%;
+            transition: opacity 0.8s ease; z-index: 10;
         }
 
-        .glitch-btn {
-            background: none; border: 1px solid #ff3333; color: #ff3333;
-            padding: 15px 30px; font-size: 0.75rem; cursor: pointer;
-            margin-top: 20px; letter-spacing: 3px; font-family: monospace;
+        .message { line-height: 2; font-size: 1rem; margin-bottom: 30px; letter-spacing: 1px; }
+
+        /* Buttons */
+        .btn {
+            background: none; border: 1px solid #00ffff; color: #00ffff;
+            padding: 15px 40px; font-size: 0.8rem; letter-spacing: 3px;
+            cursor: pointer; text-transform: uppercase;
+        }
+        .glitch-btn { border-color: #ff3333; color: #ff3333; margin-top: 20px; }
+
+        /* Initial State */
+        #ui-glitch { display: none; opacity: 0; }
+
+        /* Shake Effect */
+        .shake { animation: shake-anim 0.3s ease-in-out; filter: invert(1); }
+        @keyframes shake-anim {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-5px, 5px); }
+            50% { transform: translate(5px, -5px); }
         }
 
-        /* --- LOADING BAR STYLES --- */
-        #loading-container { display: none; width: 200px; margin: 20px auto; }
-        .progress-bg { width: 100%; height: 4px; background: rgba(0, 255, 255, 0.1); border-radius: 2px; overflow: hidden; }
-        .progress-fill { width: 0%; height: 100%; background: #00ffff; transition: width 0.1s linear; }
-
+        /* Dialogue Box */
         #xiao-ming-box {
-            position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(50px);
-            background: rgba(0, 0, 0, 0.85); border: 1px solid rgba(0, 255, 255, 0.2);
-            backdrop-filter: blur(10px); padding: 20px 30px; border-radius: 15px;
-            width: 85%; max-width: 400px; opacity: 0; transition: all 1.5s ease-out; z-index: 50;
+            position: fixed; bottom: 30px; width: 85%; max-width: 400px;
+            background: rgba(0,0,0,0.8); border: 1px solid #00ffff;
+            padding: 20px; border-radius: 10px; opacity: 0; transition: 1s;
         }
-        .show-dialogue { opacity: 1 !important; transform: translateX(-50%) translateY(0) !important; }
     </style>
 </head>
 <body>
 
     <div class="video-container">
-        <video id="bgVideo" loop playsinline preload="auto" muted>
+        <video id="bgVideo" loop playsinline muted autoplay>
             <source src="animated_work.mp4" type="video/mp4">
         </video>
     </div>
 
     <div class="content-box" id="ui-normal">
-        <p style="font-weight: 200; letter-spacing: 1px; line-height: 2;">"I built something secret for you...<br>I wanted you to have it."</p>
-        <button class="unlock-btn" onclick="triggerPhase2()">[ ACCEPT ]</button>
+        <div class="message">
+            "I built something secret for you...<br>I wanted you to have it."
+        </div>
+        <button class="btn" onclick="triggerGlitch()">[ ACCEPT ]</button>
     </div>
 
     <div class="content-box" id="ui-glitch">
-        <div id="glitch-text" style="color: #ff3333; font-family: monospace; font-size: 0.8rem;">SYSTEM_FAILURE // FRAGMENT_DETECTED</div>
-        
-        <button class="glitch-btn" id="restore-btn" onclick="startLoading()">[ RESTORE_DATA ]</button>
-
-        <div id="loading-container">
-            <div style="font-family: monospace; font-size: 0.6rem; color: #00ffff; margin-bottom: 8px;">RECOVERING... <span id="percent">0</span>%</div>
-            <div class="progress-bg"><div class="progress-fill" id="fill"></div></div>
+        <div style="color: #ff3333; margin-bottom: 20px; font-family: monospace;">
+            SYSTEM_FAILURE // FRAGMENT_DETECTED
         </div>
-
-        <button class="glitch-btn" id="check-btn" style="display:none; border-color: #00ffff; color: #00ffff;" onclick="revealVideo()">[ CHECK_CONTENT ]</button>
+        <button class="btn glitch-btn" onclick="revealVideo()">[ RESTORE_DATA ]</button>
     </div>
 
     <div id="xiao-ming-box">
-        <div style="color: #00ffff; font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 5px;">XIAO MING</div>
-        <div style="font-size: 0.9rem; font-weight: 200; line-height: 1.5;">Wait... you actually scanned it? Wow. I really didn't think you would get this far...</div>
+        <div style="color: #00ffff; font-size: 0.7rem; margin-bottom: 5px;">XIAO MING</div>
+        <div id="dialogue-text" style="font-size: 0.9rem; font-weight: 200;"></div>
     </div>
 
     <script>
-        function triggerPhase2() {
-            document.getElementById('ui-normal').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('ui-normal').style.display = 'none';
-                document.getElementById('ui-glitch').style.display = 'block';
-            }, 1000);
-        }
-
-        function startLoading() {
-            document.getElementById('restore-btn').style.display = 'none';
-            document.getElementById('loading-container').style.display = 'block';
+        function triggerGlitch() {
+            const normal = document.getElementById('ui-normal');
+            const glitch = document.getElementById('ui-glitch');
             
-            let progress = 0;
-            let fill = document.getElementById('fill');
-            let percentText = document.getElementById('percent');
-
-            let interval = setInterval(() => {
-                progress += Math.floor(Math.random() * 3) + 1; // Random loading speed
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        document.getElementById('loading-container').style.display = 'none';
-                        document.getElementById('glitch-text').innerHTML = "RECOVERY_COMPLETE";
-                        document.getElementById('glitch-text').style.color = "#00ffff";
-                        document.getElementById('check-btn').style.display = 'inline-block';
-                    }, 500);
-                }
-                fill.style.width = progress + "%";
-                percentText.innerText = progress;
-            }, 80); // Speed of loading
+            normal.style.opacity = '0';
+            setTimeout(() => {
+                normal.style.display = 'none';
+                document.body.classList.add('shake');
+                
+                setTimeout(() => {
+                    document.body.classList.remove('shake');
+                    glitch.style.display = 'block';
+                    setTimeout(() => { glitch.style.opacity = '1'; }, 50);
+                }, 300);
+            }, 800);
         }
 
         function revealVideo() {
-            document.getElementById('ui-glitch').style.opacity = '0';
-            let video = document.getElementById('bgVideo');
+            const glitch = document.getElementById('ui-glitch');
+            const video = document.getElementById('bgVideo');
+            const box = document.getElementById('xiao-ming-box');
             
-            setTimeout(() => {
-                document.getElementById('ui-glitch').style.display = 'none';
-                video.classList.add('clear-video');
-                video.play();
+            glitch.style.opacity = '0';
+            setTimeout(() => { glitch.style.display = 'none'; }, 800);
 
-                // DELAYED XIAO MING: Appears after 7 seconds of video so she can watch first
-                setTimeout(() => {
-                    document.getElementById('xiao-ming-box').classList.add('show-dialogue');
-                }, 7000); 
-            }, 1000);
+            video.classList.add('clear-video');
+            video.muted = false; // Unmute so she can hear the comedy vibe
+            video.play();
+
+            setTimeout(() => {
+                box.style.opacity = '1';
+                typeWriter("Wait... you actually scanned it? I didn't think the system would hold up. You're actually seeing this... wow.");
+            }, 3000);
+        }
+
+        function typeWriter(text) {
+            let i = 0;
+            const element = document.getElementById('dialogue-text');
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, 40);
+                }
+            }
+            type();
         }
     </script>
 </body>

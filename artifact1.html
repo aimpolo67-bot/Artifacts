@@ -10,66 +10,46 @@
         body { 
             background-color: #000; color: #fff; font-family: 'Inter', sans-serif;
             display: flex; align-items: center; justify-content: center;
-            height: 100vh; margin: 0; overflow: hidden;
-            perspective: 1000px;
+            height: 100vh; margin: 0; overflow: hidden; perspective: 1000px;
         }
 
-        /* 1. SPARKING STARS BACKGROUND */
+        /* 1. BACKGROUND LAYERS */
         .stars-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-            z-index: -2;
+            z-index: -3;
         }
 
-        .star {
-            position: absolute; background: white; border-radius: 50%;
-            opacity: 0.5; animation: twinkle var(--duration) infinite;
-        }
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.2); }
+        /* The Techno Room (Grid Effect) */
+        #techno-room {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            background-position: center;
+            display: none; opacity: 0; transition: 2s ease; z-index: -2;
         }
 
-        /* 2. VIDEO BACKGROUND (Starts very dim) */
         .video-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
-            z-index: -1; opacity: 0; transition: opacity 4s ease; /* Slower fade in */
+            z-index: -1; opacity: 0; transition: opacity 4s ease;
         }
-        video {
-            width: 100vw; height: 100vh; object-fit: cover;
-            filter: brightness(0.4); /* Lower brightness for clarity */
-        }
-        .show-video { opacity: 1 !important; }
+        video { width: 100vw; height: 100vh; object-fit: cover; filter: brightness(0.4); }
 
-        /* 3. THE UI BOXES */
-        .content-box {
-            position: absolute; text-align: center; 
-            transition: opacity 1s ease; z-index: 10; width: 100%;
-        }
-        
-        .title { color: #00ffff; letter-spacing: 12px; font-size: 0.7rem; font-weight: 200; margin-bottom: 25px; text-transform: uppercase; opacity: 0.6;}
+        /* 2. UI COMPONENTS */
+        .content-box { position: absolute; text-align: center; transition: opacity 1s ease; z-index: 10; width: 100%; }
         .message { line-height: 2.5; font-size: 1.1rem; font-weight: 200; letter-spacing: 1.5px; margin-bottom: 40px; color: rgba(255, 255, 255, 0.9); }
-        .chinese { font-size: 1.5rem; color: #fff; margin-top: 40px; font-weight: 100; letter-spacing: 10px; opacity: 0.5; }
-
-        .unlock-btn {
+        
+        .btn {
             background: none; border: 1px solid rgba(0, 255, 255, 0.4);
             color: #00ffff; padding: 15px 40px; font-size: 0.8rem;
-            letter-spacing: 5px; cursor: pointer; transition: 0.5s;
-            font-family: 'Inter', sans-serif; font-weight: 200;
+            letter-spacing: 5px; cursor: pointer; transition: 0.5s; font-family: 'Inter', sans-serif;
         }
+        .glitch-btn { border-color: #ff3333; color: #ff3333; font-family: monospace; }
 
-        /* 4. GLITCH & LOADING */
-        #ui-glitch { display: none; opacity: 0; color: #ff3333; font-family: monospace; text-align: center;}
-        
-        .glitch-btn {
-            background: none; border: 1px solid #ff3333; color: #ff3333;
-            padding: 15px 30px; font-size: 0.8rem; cursor: pointer; transition: 0.3s;
-            margin-top: 20px; letter-spacing: 3px; font-family: monospace;
-        }
-        
-        /* Final Reveal Button */
-        #final-check-btn { display: none; border-color: #00ffff; color: #00ffff; }
-
+        /* 3. TRANSITIONS & SHAKE */
+        #ui-glitch, #ui-techno { display: none; opacity: 0; }
         .system-shake { animation: hard-shake 0.3s ease-in-out; filter: invert(1); }
         @keyframes hard-shake {
             0%, 100% { transform: translate(0, 0); }
@@ -77,12 +57,12 @@
             50% { transform: translate(5px, -5px); }
         }
 
-        /* 5. XIAO MING BOX */
+        /* 4. XIAO MING BOX */
         #xiao-ming-box {
             position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(50px);
             background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px); padding: 20px 30px; border-radius: 15px;
-            width: 80%; max-width: 400px; opacity: 0; transition: all 1s ease-out; z-index: 50;
+            width: 80%; max-width: 400px; opacity: 0; transition: 1s; z-index: 50;
         }
         #xiao-ming-box.show-dialogue { opacity: 1; transform: translateX(-50%) translateY(0); }
     </style>
@@ -90,6 +70,7 @@
 <body>
 
     <div class="stars-container" id="stars"></div>
+    <div id="techno-room"></div>
 
     <div class="video-container" id="vid-wrap">
         <video id="bgVideo" loop playsinline muted>
@@ -98,45 +79,26 @@
     </div>
 
     <div class="content-box" id="ui-normal">
-        <div class="title">Artifact #01</div>
-        <div class="message">
-            "I built something I have never done before,<br>
-            a secret piece that only you can unlock,<br>
-            and I wanted you to have it."
-        </div>
-        <button class="unlock-btn" onclick="triggerPhase2()">[ ACCEPT ]</button>
-        <div class="chinese">第一个碎片</div>
+        <div class="message">"I built something secret for you...<br>I wanted you to have it."</div>
+        <button class="btn" onclick="triggerPhase2()">[ ACCEPT ]</button>
     </div>
 
     <div class="content-box" id="ui-glitch">
-        <div id="status-text" style="font-size: 0.8rem; line-height: 2; margin-bottom: 10px;">
-            SYSTEM_FAILURE // ARTIFACT_OVERLOAD<br>
-            UNSAVED_FRAGMENT_DETECTED
-        </div>
-        <button class="glitch-btn" id="restore-btn" onclick="startLoading()">[ RESTORE_FRAGMENT_DATA ]</button>
-        <button class="glitch-btn" id="final-check-btn" onclick="revealFinal()">[ VIEW_FRAGMENT ]</button>
+        <div id="status-text" style="color:#ff3333; font-family:monospace; margin-bottom:20px;">SYSTEM_FAILURE // FRAGMENT_DETECTED</div>
+        <button class="btn glitch-btn" id="restore-btn" onclick="startLoading()">[ RESTORE_DATA ]</button>
+    </div>
+
+    <div class="content-box" id="ui-techno">
+        <div class="message" style="color:#00ffff;">DATA RESTORED.<br>THE ARCHITECT'S CHAMBER IS OPEN.</div>
+        <button class="btn" style="border-color:#00ffff;" onclick="revealFinal()">[ VIEW_FRAGMENT ]</button>
     </div>
 
     <div id="xiao-ming-box">
-        <div style="color:#00ffff; font-size:0.7rem; margin-bottom:8px;">XIAO MING</div>
+        <div style="color:#00ffff; font-size:0.7rem; margin-bottom:8px; text-transform:uppercase;">Xiao Ming</div>
         <div style="color:#fff; font-size:0.95rem; font-weight:200;">Wait... you actually scanned it and opened it? Wow. I really didn't think you would get this far...</div>
     </div>
 
     <script>
-        // Stars Generation
-        const starContainer = document.getElementById('stars');
-        for (let i = 0; i < 100; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = `${Math.random() * 100}vw`;
-            star.style.top = `${Math.random() * 100}vh`;
-            const size = Math.random() * 3 + 'px';
-            star.style.width = size;
-            star.style.height = size;
-            star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
-            starContainer.appendChild(star);
-        }
-
         function triggerPhase2() {
             const uiNormal = document.getElementById('ui-normal');
             const uiGlitch = document.getElementById('ui-glitch');
@@ -153,41 +115,53 @@
         }
 
         function startLoading() {
-            const restoreBtn = document.getElementById('restore-btn');
-            const finalBtn = document.getElementById('final-check-btn');
+            const btn = document.getElementById('restore-btn');
             const status = document.getElementById('status-text');
-            
-            restoreBtn.style.display = 'none'; // Hide first button
+            btn.style.display = 'none';
             
             let progress = 0;
-            // Longer loading speed (500ms per 10% = 5 seconds total)
             const interval = setInterval(() => {
                 progress += 5;
-                status.innerHTML = `RESTORING DATA... ${progress}%`;
+                status.innerHTML = `DECRYPTING... ${progress}%`;
                 if (progress >= 100) {
                     clearInterval(interval);
-                    status.innerHTML = "FRAGMENT RESTORED SUCCESSFULLY";
-                    finalBtn.style.display = 'inline-block'; // Show final check button
+                    enterTechnoPlace();
                 }
             }, 250); 
         }
 
-        function revealFinal() {
+        function enterTechnoPlace() {
             const uiGlitch = document.getElementById('ui-glitch');
+            const uiTechno = document.getElementById('ui-techno');
+            const technoRoom = document.getElementById('techno-room');
+
+            uiGlitch.style.opacity = '0';
+            setTimeout(() => {
+                uiGlitch.style.display = 'none';
+                technoRoom.style.display = 'block';
+                setTimeout(() => { 
+                    technoRoom.style.opacity = '1';
+                    uiTechno.style.display = 'block';
+                    setTimeout(() => { uiTechno.style.opacity = '1'; }, 50);
+                }, 100);
+            }, 1000);
+        }
+
+        function revealFinal() {
+            const uiTechno = document.getElementById('ui-techno');
             const videoWrap = document.getElementById('vid-wrap');
             const video = document.getElementById('bgVideo');
             const xiaoMingBox = document.getElementById('xiao-ming-box');
 
-            uiGlitch.style.opacity = '0';
-            setTimeout(() => { uiGlitch.style.display = 'none'; }, 1000);
+            uiTechno.style.opacity = '0';
+            setTimeout(() => { uiTechno.style.display = 'none'; }, 1000);
 
-            // Slower fade in (4 seconds defined in CSS)
-            videoWrap.classList.add('show-video');
+            videoWrap.style.opacity = '1';
             video.play();
 
             setTimeout(() => {
                 xiaoMingBox.classList.add('show-dialogue');
-            }, 5000); // Delayed dialogue to let her see the video first
+            }, 5000);
         }
     </script>
 </body>

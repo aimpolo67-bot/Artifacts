@@ -14,26 +14,38 @@
             perspective: 1000px;
         }
 
-        /* 1. THE VIDEO BACKGROUND */
+        /* 1. SPARKING STARS BACKGROUND (Shown First) */
+        .stars-container {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            z-index: -2;
+        }
+
+        /* Simple Star Animation */
+        .star {
+            position: absolute; background: white; border-radius: 50%;
+            opacity: 0.5; animation: twinkle var(--duration) infinite;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* 2. THE VIDEO BACKGROUND (Hidden initially) */
         .video-container {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+            z-index: -1; opacity: 0; transition: opacity 2s ease;
         }
         video {
-            width: 100vw;
-            height: 100vh;
-            object-fit: cover;
-            filter: brightness(0.2) blur(15px);
-            transition: filter 3s ease;
+            width: 100vw; height: 100vh; object-fit: cover;
+            filter: brightness(0.6);
         }
-        .clear-video { filter: brightness(0.6) blur(0px) !important; }
+        .show-video { opacity: 1 !important; }
 
-        /* 2. THE NORMAL UI (PHASE 1) */
+        /* 3. THE UI BOXES */
         .content-box {
-            position: absolute; /* FIXED: Keeps boxes in the same center spot */
-            text-align: center; 
-            transition: opacity 1.5s ease, transform 1.5s ease;
-            z-index: 10;
-            width: 100%; /* Ensures text doesn't squish */
+            position: absolute; text-align: center; 
+            transition: opacity 1.5s ease; z-index: 10; width: 100%;
         }
         
         .title { color: #00ffff; letter-spacing: 12px; font-size: 0.7rem; font-weight: 200; margin-bottom: 25px; text-transform: uppercase; opacity: 0.6;}
@@ -46,58 +58,39 @@
             letter-spacing: 5px; cursor: pointer; transition: 0.5s;
             font-family: 'Inter', sans-serif; font-weight: 200;
         }
-        .unlock-btn:hover { background: rgba(0, 255, 255, 0.1); border-color: #00ffff; box-shadow: 0 0 20px rgba(0, 255, 255, 0.2); }
 
-        /* 3. GLITCH EFFECTS (PHASE 2) */
-        .system-shake { animation: hard-shake 0.3s ease-in-out; filter: invert(1); }
-        @keyframes hard-shake {
-            0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(-5px, 5px); }
-            50% { transform: translate(5px, -5px); }
-            75% { transform: translate(-5px, -5px); }
-        }
-
-        /* FIXED: Added opacity 0 and centered text properly */
-        #ui-glitch { 
-            display: none; 
-            opacity: 0; 
-            color: #ff3333; 
-            font-family: monospace; 
-            letter-spacing: 2px; 
-            text-align: center;
-        }
+        /* 4. GLITCH & LOADING STYLES */
+        #ui-glitch { display: none; opacity: 0; color: #ff3333; font-family: monospace; text-align: center;}
         
         .glitch-btn {
             background: none; border: 1px solid #ff3333; color: #ff3333;
             padding: 15px 30px; font-size: 0.8rem; cursor: pointer; transition: 0.3s;
             margin-top: 20px; letter-spacing: 3px; font-family: monospace;
         }
-        .glitch-btn:hover { background: rgba(255, 51, 51, 0.2); box-shadow: 0 0 15px rgba(255, 51, 51, 0.4); }
 
-        /* 4. XIAO MING SURPRISE DIALOGUE */
+        .system-shake { animation: hard-shake 0.3s ease-in-out; filter: invert(1); }
+        @keyframes hard-shake {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-5px, 5px); }
+            50% { transform: translate(5px, -5px); }
+        }
+
+        /* 5. XIAO MING BOX */
         #xiao-ming-box {
             position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%) translateY(50px);
             background: rgba(0, 0, 0, 0.7); border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px); padding: 20px 30px; border-radius: 15px;
-            width: 80%; max-width: 400px; text-align: left;
-            opacity: 0; pointer-events: none; transition: all 1s ease-out; z-index: 50;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 80%; max-width: 400px; opacity: 0; transition: all 1s ease-out; z-index: 50;
         }
-        #xiao-ming-box.show-dialogue {
-            opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto;
-        }
-        .avatar-name {
-            color: #00ffff; font-size: 0.75rem; font-weight: 500; letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase;
-        }
-        .avatar-text {
-            color: #fff; font-size: 0.95rem; font-weight: 200; line-height: 1.6; letter-spacing: 0.5px;
-        }
+        #xiao-ming-box.show-dialogue { opacity: 1; transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
 
-    <div class="video-container">
-        <video id="bgVideo" autoplay loop muted playsinline preload="auto">
+    <div class="stars-container" id="stars"></div>
+
+    <div class="video-container" id="vid-wrap">
+        <video id="bgVideo" loop playsinline muted>
             <source src="animated_work.mp4" type="video/mp4">
         </video>
     </div>
@@ -114,68 +107,81 @@
     </div>
 
     <div class="content-box" id="ui-glitch">
-        <div style="font-size: 0.8rem; line-height: 2;">
+        <div id="status-text" style="font-size: 0.8rem; line-height: 2; margin-bottom: 10px;">
             SYSTEM_FAILURE // ARTIFACT_OVERLOAD<br>
             UNSAVED_FRAGMENT_DETECTED
         </div>
-        <button class="glitch-btn" onclick="revealVideo()">[ RESTORE_FRAGMENT_DATA ]</button>
+        <button class="glitch-btn" id="restore-btn" onclick="startLoading()">[ RESTORE_FRAGMENT_DATA ]</button>
     </div>
 
     <div id="xiao-ming-box">
-        <div class="avatar-name">Xiao Ming</div>
-        <div class="avatar-text">Wait... you actually scanned it and opened it? Wow. I really didn't think you would get this far...</div>
+        <div style="color:#00ffff; font-size:0.7rem; margin-bottom:8px;">XIAO MING</div>
+        <div style="color:#fff; font-size:0.95rem; font-weight:200;">Wait... you actually scanned it and opened it? Wow. I really didn't think you would get this far...</div>
     </div>
 
     <script>
-        const uiNormal = document.getElementById('ui-normal');
-        document.addEventListener('mousemove', (e) => {
-            const x = (window.innerWidth / 2 - e.clientX) / 60;
-            const y = (window.innerHeight / 2 - e.clientY) / 60;
-            uiNormal.style.transform = `rotateY(${-x}deg) rotateX(${y}deg)`;
-        });
-
-        function triggerPhase2() {
-            const body = document.body;
-            const uiNormal = document.getElementById('ui-normal');
-            const uiGlitch = document.getElementById('ui-glitch');
-            const btn = document.querySelector('.unlock-btn');
-
-            btn.innerText = "[ PROCESSING... ]";
-            btn.style.opacity = "0.5";
-            btn.style.pointerEvents = "none"; 
-
-            setTimeout(() => {
-                // FIXED: Fade out normal UI before showing glitch
-                uiNormal.style.opacity = '0';
-                setTimeout(() => {
-                    uiNormal.style.display = 'none';
-                    body.classList.add('system-shake');
-                    setTimeout(() => {
-                        body.classList.remove('system-shake');
-                        uiGlitch.style.display = 'block';
-                        // Fade in glitch UI
-                        setTimeout(() => { uiGlitch.style.opacity = '1'; }, 50);
-                    }, 400); 
-                }, 800);
-            }, 1000); 
+        // Generate Stars
+        const starContainer = document.getElementById('stars');
+        for (let i = 0; i < 100; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = `${Math.random() * 100}vw`;
+            star.style.top = `${Math.random() * 100}vh`;
+            const size = Math.random() * 3 + 'px';
+            star.style.width = size;
+            star.style.height = size;
+            star.style.setProperty('--duration', `${Math.random() * 3 + 2}s`);
+            starContainer.appendChild(star);
         }
 
-        function revealVideo() {
+        function triggerPhase2() {
+            const uiNormal = document.getElementById('ui-normal');
             const uiGlitch = document.getElementById('ui-glitch');
+            uiNormal.style.opacity = '0';
+            setTimeout(() => {
+                uiNormal.style.display = 'none';
+                document.body.classList.add('system-shake');
+                setTimeout(() => {
+                    document.body.classList.remove('system-shake');
+                    uiGlitch.style.display = 'block';
+                    setTimeout(() => { uiGlitch.style.opacity = '1'; }, 50);
+                }, 400);
+            }, 800);
+        }
+
+        function startLoading() {
+            const btn = document.getElementById('restore-btn');
+            const status = document.getElementById('status-text');
+            
+            btn.style.pointerEvents = 'none';
+            btn.innerText = "[ INITIALIZING... ]";
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                status.innerHTML = `RESTORING DATA... ${progress}%`;
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    revealFinal();
+                }
+            }, 200); // Adjust speed of loading here
+        }
+
+        function revealFinal() {
+            const uiGlitch = document.getElementById('ui-glitch');
+            const videoWrap = document.getElementById('vid-wrap');
             const video = document.getElementById('bgVideo');
             const xiaoMingBox = document.getElementById('xiao-ming-box');
 
-            uiGlitch.style.transition = "opacity 1s ease";
             uiGlitch.style.opacity = '0';
             setTimeout(() => { uiGlitch.style.display = 'none'; }, 1000);
 
-            video.classList.add('clear-video');
+            videoWrap.classList.add('show-video');
             video.play();
 
-            // XIAO MING POPS UP 3.5 SECONDS LATER
             setTimeout(() => {
                 xiaoMingBox.classList.add('show-dialogue');
-            }, 3500);
+            }, 3000);
         }
     </script>
 </body>
